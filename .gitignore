@@ -1,131 +1,136 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+# 所有文档文件（只保留README）
+*.md
+!README.md
 
-# Virtual environments
-venv/
-ENV/
-env/
-.venv
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Environment variables
-.env
-.env.local
-*.env
-
-# Logs
-*.log
-logs/
-
-# Cache and temporary
-.cache/
-cache/
-temp/
-tmp/
-*.tmp
-*.temp
-
-# Test outputs and results
-test_output*.txt
-test_out*.txt
-test_result*.txt
-final_test*.log
+# 所有测试文件
+test_*.py
+*_test.py
+test_*.json
+test_*.jsonl
+test_*.txt
 test_*.log
-*_test_*.log
-*.jsonl
-
-# Trajectories and logs
-trajectories/
-full_run_*.log
-run.log
-diag_*.txt
-
-# Stress test results
-stress_test_*.log
-stress_test_*.json
-stress_test_*.txt
-
-# ASA test results
+e2e_*.txt
+e2e_*.log
+quick_test*.jsonl
+stress_test*.json
+stress_test*.log
+stress_test*.txt
+real_data_test.jsonl
+single_rag_test*.json
 asa_*.json
 asa_problems_*.json
+integration_test*.json
 
-# Evaluation results
-evaluation_results/
-test_eval/
-
-# E2E test logs
-e2e_*.log
-e2e_*.txt
-
-# RAG logs
-rag_*.log
+# 日志文件
+*.log
+*.txt
 rag_*.txt
-
-# Debug files
-_debug_*.py
-diagnose_*.py
-diagnose_*.txt
-
-# Output files
-output/
+diag_*.txt
 final_result.txt
-verify_*.txt
-verify_*.log
+final_test*.log
+full_run*.log
+run.log
+final_verify.py
 
-# Chroma DB and FAISS cache
+# 缓存和数据库
 chroma_db/
 .faiss_cache/
 memory_store/
 test_mem/
+*ANALYSIS*.md
+*ANALYSIS*.txt
+*SUMMARY*.md
+*SUMMARY*.txt
+*SUMMARY*.py
+*REPORT*.md
+*CHECKLIST*.md
+*CHECKLIST*.py
+*GUIDE*.md
+*GUIDE*.txt
+*QUICK_REFERENCE*.md
+*QUICK_REFERENCE*.py
+*VERIFICATION*.md
+*VERIFICATION*.py
 
-# Gradio
+# 面试材料
+面试*
+简历*
+答辩*
+演讲*
+PPT*
+
+# 教学文档
+教学/
+
+# 日志和输出
+*.log
+output/
+trajectories/
+stress_test_results/
+evaluation_results/
+test_eval/
+
+# 缓存和数据库
+.chroma_db/
+.faiss_cache/
+memory_store/
+test_mem/
 .gradio/
-
-# Learnings
 .learnings/
-
-# Schema cache
+.qoder/
 .schema_cache/
+__pycache__/
+*.pyc
 
-# Large data files
+# 调试和诊断
+diagnose_*.py
+diagnose_*.txt
+_debug_*.py
+diag_*.txt
+
+# 临时文件
+temp*.py
+fix_*.py
+update_*.py
+verify_*.py
+verify_*.txt
+check_*.py
+analyze_*.py
+
+# HTML文件
+*.html
+
+# PDF文件
+*.pdf
+
+# 旧版和备份
+*旧*
+*备份*
+*backup*
+*version*
+
+# JSON数据文件（除了配置）
+*.json
+!routing_config.json
+!skills.json
+!test_cases.json
+
+# CSV和大型数据
 *.csv
 *.parquet
 *.feather
 
-# Documentation (keep only essential ones)
-*.pyc
-*.pyo
-
-# OS files
+# OS文件
+.DS_Store
 Thumbs.db
-Desktop.ini
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# 嵌套的Git仓库
+FinSQL_agent-2024_Financial_LLM_Challenge-1st-Solutions/
+autoresearch/
+hello-agents/
+ms-agent/
