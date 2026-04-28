@@ -27,7 +27,7 @@ Coder (Code Generation & Execution) ←→ Tools (Tool Invocation)
     ↓
 Reviewer (Logical Auditing)
     ↓
-ErrorHandler (Error Recovery) ←→ ProfileUpdater (Profile Update)
+ErrorHandler (Error Recovery)
     ↓
 FINISH
 ```
@@ -57,25 +57,8 @@ finished_step = remaining_steps.pop(0)
 - LLMs are prone to "false completion" hallucinations in long-chain tasks
 - `pop(0)` enforces physical control: as long as the list is not empty, execution must continue
 
-### 2. Dynamic Skill Injection (Skill-on-demand)
 
-**Skill Library** (`skills.json`):
-
-| Skill Name | Trigger Keywords | Core Function |
-|------------|-----------------|---------------|
-| dividend_expert | dividend, dividend yield | dv_ttm unit conversion, status filtering |
-| charting_expert | plot, visualize | Chinese font, path generation |
-| finance_audit | financial report, revenue | unit conversion, time lag check |
-| market_expert | HK stock, ETF | code suffix, valuation switch |
-| error_handling | error, retry | retry strategy, graceful degradation |
-
-**Workflow**:
-1. Supervisor identifies intent → suggests loading skill
-2. Coder calls `load_skill()` tool
-3. System reads skills.json, injects rules as ToolMessage
-4. Coder generates code after receiving skill
-
-### 3. Model Tiering Factory
+### 2. Model Tiering Factory
 
 **Implementation** (`lib.py` lines 67-108):
 
@@ -89,7 +72,7 @@ def get_chat_model(model_type):
 
 **Effect**: Lightweight nodes use low-cost models, core logic nodes use high-performance models, effectively controlling inference costs.
 
-### 4. Session Isolation (KernelManager)
+### 3. Session Isolation (KernelManager)
 
 **Implementation** (`lib.py` lines 481-552):
 
@@ -106,7 +89,7 @@ class KernelManager:
 - Physical variable isolation between multi-tenants
 - Multi-turn conversations from the same user can接力 use variables
 
-### 5. 4-Level Backtracking Strategy (BacktrackingRouter)
+### 4. 4-Level Backtracking Strategy (BacktrackingRouter)
 
 **Implementation** (`multi_agent.py` lines 105-160):
 
@@ -117,7 +100,7 @@ class KernelManager:
 | L3 | alternative_fields | Primary field failure |
 | L4 | reject_with_reason | All strategies exhausted |
 
-### 6. Self-Correction Reflection Mechanism
+### 5. Self-Correction Reflection Mechanism
 
 **Implementation** (`multi_agent.py` lines 646-681):
 
@@ -165,22 +148,8 @@ if execution_status == "error" and retry_count >= 2:
 └─────────────────────────────────────┘
 ```
 
-### 2. Agent Coordination Layer (orchestrator.py)
 
-**Features**:
-- Inter-agent conflict arbitration (voting, priority, consensus)
-- 4-level Fallback strategy (retry → switch → human → reject)
-- Human-in-the-Loop (triggers human confirmation at low confidence)
-- ToolUsageGraph (intelligent tool routing)
-
-### 3. Root Cause Analysis (rca_module.py)
-
-**Features**:
-- Fault Propagation Graph: Traces error propagation path across Agents
-- Root Cause Localization: Identifies the true error source
-- Propagation-Aware Retry: Selects retry strategy based on propagation chain
-
-### 4. Trajectory Collection (trajectory_collector.py)
+### 2. Trajectory Collection (trajectory_collector.py)
 
 **Features**:
 - Automatically collects Agent execution trajectories
@@ -230,11 +199,6 @@ if execution_status == "error" and retry_count >= 2:
 - ✅ KernelManager session isolation
 - ✅ 72-round stress test validation (73% success rate)
 
-**In Progress**:
-- 🔄 Execution sequence audit mechanism (prevent recursive dead loops)
-- 🔄 OpenSandbox kernel integration
-- 🔄 Deep memory system integration
-
 ---
 
 ## Tech Stack
@@ -266,21 +230,5 @@ ASA/
     └── batch_run_20260130_155446.jsonl  # 27-round test
 ```
 
----
 
-## Core Code References
 
-| Mechanism | File | Lines |
-|-----------|------|-------|
-| remaining_steps.pop(0) | multi_agent.py | 728, 762, 804 |
-| Model tiering factory | lib.py | 67-108 |
-| KernelManager | lib.py | 481-552 |
-| BacktrackingRouter | multi_agent.py | 105-160 |
-| Self-Correction | multi_agent.py | 646-681 |
-| MultiAgentState | multi_agent.py | 317-336 |
-
----
-
-**Project Author**: way  
-**Created**: 2025-11-06  
-**Last Updated**: 2026-01-30
