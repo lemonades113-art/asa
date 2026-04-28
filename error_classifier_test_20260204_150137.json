@@ -1,0 +1,168 @@
+{
+  "test_timestamp": "2026-02-04T15:01:37.324920",
+  "summary": {
+    "total_tests": 8,
+    "graceful_degradation": 3,
+    "retry_scheduled": 5,
+    "failed": 0,
+    "by_error_type": {
+      "auth_error": 1,
+      "rate_limit": 1,
+      "network_error": 1,
+      "data_vacuum": 2,
+      "code_error": 2,
+      "unknown": 1
+    }
+  },
+  "results": [
+    {
+      "timestamp": "2026-02-04T15:01:37.314789",
+      "scenario": "API授权失效",
+      "error_msg": "API授权失效,请检查配置: [DATE]: 2026-01-30 [SOURCE]: Tushare Pro API",
+      "classification": {
+        "error_type": "auth_error",
+        "is_retryable": false,
+        "strategy": "graceful_degradation"
+      },
+      "steps": [
+        {
+          "action": "graceful_degradation",
+          "reason": "auth_error不可重试",
+          "user_message": "[ERROR] API授权失效，请联系管理员检查Tushare Token配置"
+        }
+      ],
+      "final_status": "graceful_degraded",
+      "user_message": "[ERROR] API授权失效，请联系管理员检查Tushare Token配置"
+    },
+    {
+      "timestamp": "2026-02-04T15:01:37.316342",
+      "scenario": "Tushare限流",
+      "error_msg": "请求过于频繁，请稍后再试 (429 Too Many Requests)",
+      "classification": {
+        "error_type": "rate_limit",
+        "is_retryable": true,
+        "strategy": "exponential_backoff"
+      },
+      "steps": [
+        {
+          "action": "exponential_backoff",
+          "wait_seconds": 1,
+          "retry_count": 1
+        }
+      ],
+      "final_status": "retry_scheduled",
+      "user_message": "[INFO] 请求频率受限，正在自动重试..."
+    },
+    {
+      "timestamp": "2026-02-04T15:01:37.318020",
+      "scenario": "网络超时",
+      "error_msg": "Connection timeout after 30 seconds: HTTPSConnectionPool(host='api.tushare.pro', port=443)",
+      "classification": {
+        "error_type": "network_error",
+        "is_retryable": true,
+        "strategy": "exponential_backoff"
+      },
+      "steps": [
+        {
+          "action": "exponential_backoff",
+          "wait_seconds": 1,
+          "retry_count": 1
+        }
+      ],
+      "final_status": "retry_scheduled",
+      "user_message": "[INFO] 网络连接不稳定，正在重试..."
+    },
+    {
+      "timestamp": "2026-02-04T15:01:37.319529",
+      "scenario": "数据真空-财报未发布",
+      "error_msg": "[DATA]: {'error': '无数据', 'reason': '2025年一季报尚未发布'}",
+      "classification": {
+        "error_type": "data_vacuum",
+        "is_retryable": false,
+        "strategy": "graceful_degradation"
+      },
+      "steps": [
+        {
+          "action": "graceful_degradation",
+          "reason": "data_vacuum不可重试",
+          "user_message": "[INFO] 该时间段暂无数据，可能原因：1.财报尚未发布 2.股票停牌 3.数据真空期"
+        }
+      ],
+      "final_status": "graceful_degraded",
+      "user_message": "[INFO] 该时间段暂无数据，可能原因：1.财报尚未发布 2.股票停牌 3.数据真空期"
+    },
+    {
+      "timestamp": "2026-02-04T15:01:37.320536",
+      "scenario": "数据真空-股票停牌",
+      "error_msg": "股票已停牌，无法获取数据 (ts_code: 000001.SZ)",
+      "classification": {
+        "error_type": "data_vacuum",
+        "is_retryable": false,
+        "strategy": "graceful_degradation"
+      },
+      "steps": [
+        {
+          "action": "graceful_degradation",
+          "reason": "data_vacuum不可重试",
+          "user_message": "[INFO] 该时间段暂无数据，可能原因：1.财报尚未发布 2.股票停牌 3.数据真空期"
+        }
+      ],
+      "final_status": "graceful_degraded",
+      "user_message": "[INFO] 该时间段暂无数据，可能原因：1.财报尚未发布 2.股票停牌 3.数据真空期"
+    },
+    {
+      "timestamp": "2026-02-04T15:01:37.321550",
+      "scenario": "代码错误-KeyError",
+      "error_msg": "KeyError: 'trade_date' not found in DataFrame",
+      "classification": {
+        "error_type": "code_error",
+        "is_retryable": true,
+        "strategy": "immediate_retry"
+      },
+      "steps": [
+        {
+          "action": "immediate_retry",
+          "retry_count": 1
+        }
+      ],
+      "final_status": "retry_scheduled",
+      "user_message": "[INFO] 代码执行异常，正在修复..."
+    },
+    {
+      "timestamp": "2026-02-04T15:01:37.322555",
+      "scenario": "代码错误-TypeError",
+      "error_msg": "TypeError: cannot concatenate 'str' and 'int' objects",
+      "classification": {
+        "error_type": "code_error",
+        "is_retryable": true,
+        "strategy": "immediate_retry"
+      },
+      "steps": [
+        {
+          "action": "immediate_retry",
+          "retry_count": 1
+        }
+      ],
+      "final_status": "retry_scheduled",
+      "user_message": "[INFO] 代码执行异常，正在修复..."
+    },
+    {
+      "timestamp": "2026-02-04T15:01:37.323879",
+      "scenario": "未知错误",
+      "error_msg": "Unknown error occurred during execution",
+      "classification": {
+        "error_type": "unknown",
+        "is_retryable": true,
+        "strategy": "immediate_retry"
+      },
+      "steps": [
+        {
+          "action": "immediate_retry",
+          "retry_count": 1
+        }
+      ],
+      "final_status": "retry_scheduled",
+      "user_message": "[INFO] 遇到未知错误，正在尝试修复..."
+    }
+  ]
+}

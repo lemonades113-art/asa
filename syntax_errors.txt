@@ -1,0 +1,27 @@
+﻿python : Traceback (most recent call last):
+所在位置 行:1 字符: 56
++ ... \Users\HUAWEI\Desktop\简历\三个\ASA"; python check_syntax.py 2>&1 | Out-F ...
++                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::S 
+   tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "D:\HuaweiMoveData\Users\HUAWEI\Desktop\简历\三个\ASA\check_syntax.py", line 7,
+ in <module>
+    ast.parse(code)
+  File "D:\data\Lib\ast.py", line 50, in parse
+    return compile(source, filename, mode, flags,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<unknown>", line 1355
+    \U0001f6ab **严禁使用 Markdown 符号**:
+    ^
+SyntaxError: invalid character '\U0001f6ab' (U+1F6AB)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\HuaweiMoveData\Users\HUAWEI\Desktop\简历\三个\ASA\check_syntax.py", line 10
+, in <module>
+    print(f"SyntaxError at line {e.lineno}: {e.msg}")
+UnicodeEncodeError: 'gbk' codec can't encode character '\U0001f6ab' in position 45
+: illegal multibyte sequence

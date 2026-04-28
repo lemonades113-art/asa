@@ -1,0 +1,833 @@
+{
+  "test_timestamp": "2026-02-04T15:02:09.873160",
+  "summary": {
+    "total": 15,
+    "success": 7,
+    "failed": 8,
+    "success_rate": "46.7%"
+  },
+  "error_type_distribution": {
+    "auth_error": 1,
+    "rate_limit": 2,
+    "network_error": 2,
+    "data_vacuum": 3,
+    "code_error": 3,
+    "unknown": 1
+  },
+  "strategy_distribution": {
+    "graceful_degradation": 4,
+    "exponential_backoff": 4,
+    "immediate_retry": 4
+  },
+  "results": [
+    {
+      "test_id": "TEST_001",
+      "prompt": "查询中国平安的股息率",
+      "description": "正常查询-分红数据",
+      "expected_error_type": null,
+      "actual_error_type": null,
+      "strategy": null,
+      "total_steps": 5,
+      "final_status": "success",
+      "success": true,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询中国平安的股息率..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "success",
+          "has_data": true
+        },
+        {
+          "node": "Reviewer",
+          "action": "audit",
+          "content": "审计数据完整性和逻辑合理性"
+        },
+        {
+          "node": "ProfileUpdater",
+          "action": "update_profile",
+          "content": "更新用户画像"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_002",
+      "prompt": "查询贵州茅台的市盈率",
+      "description": "授权失效-不可重试",
+      "expected_error_type": "auth_error",
+      "actual_error_type": "auth_error",
+      "strategy": "graceful_degradation",
+      "total_steps": 5,
+      "final_status": "graceful_degraded",
+      "success": true,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询贵州茅台的市盈率..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "API授权失效,请检查配置: Tushare Token无效"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "auth_error",
+          "strategy": "graceful_degradation",
+          "is_retryable": false
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "graceful_degradation",
+          "reason": "auth_error不可重试",
+          "user_message": "[ERROR] API授权失效，请联系管理员检查Tushare Token配置"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_003",
+      "prompt": "查询比亚迪的财务报表",
+      "description": "限流错误-指数退避",
+      "expected_error_type": "rate_limit",
+      "actual_error_type": "rate_limit",
+      "strategy": "exponential_backoff",
+      "total_steps": 9,
+      "final_status": "failed",
+      "success": false,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询比亚迪的财务报表..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "请求过于频繁，请稍后再试 (429 Too Many Requests)"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "rate_limit",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "exponential_backoff",
+          "wait_seconds": 1,
+          "retry_count": 1
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "rate_limit",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "exponential_backoff",
+          "wait_seconds": 2,
+          "retry_count": 2
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "rate_limit",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "max_retries_exceeded",
+          "reason": "超过最大重试次数(3次)"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_004",
+      "prompt": "查询宁德时代的市值",
+      "description": "网络超时-指数退避",
+      "expected_error_type": "network_error",
+      "actual_error_type": "network_error",
+      "strategy": "exponential_backoff",
+      "total_steps": 9,
+      "final_status": "failed",
+      "success": false,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询宁德时代的市值..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "Connection timeout after 30 seconds: 无法连接到api.tushare.pro"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "network_error",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "exponential_backoff",
+          "wait_seconds": 1,
+          "retry_count": 1
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "network_error",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "exponential_backoff",
+          "wait_seconds": 2,
+          "retry_count": 2
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "network_error",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "max_retries_exceeded",
+          "reason": "超过最大重试次数(3次)"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_005",
+      "prompt": "查询2025年一季报净利润（2月份查询）",
+      "description": "数据真空-财报未发布",
+      "expected_error_type": "data_vacuum",
+      "actual_error_type": "data_vacuum",
+      "strategy": "graceful_degradation",
+      "total_steps": 5,
+      "final_status": "graceful_degraded",
+      "success": true,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询2025年一季报净利润（2月份查询）..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "[DATA]: {'error': '无数据', 'reason': '2025年一季报尚未发布'}"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "data_vacuum",
+          "strategy": "graceful_degradation",
+          "is_retryable": false
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "graceful_degradation",
+          "reason": "data_vacuum不可重试",
+          "user_message": "[INFO] 该时间段暂无数据，可能原因：1.财报尚未发布 2.股票停牌 3.数据真空期"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_006",
+      "prompt": "查询ST泰禾的最新股价",
+      "description": "数据真空-股票停牌",
+      "expected_error_type": "data_vacuum",
+      "actual_error_type": "data_vacuum",
+      "strategy": "graceful_degradation",
+      "total_steps": 5,
+      "final_status": "graceful_degraded",
+      "success": true,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询ST泰禾的最新股价..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "股票已停牌，无法获取数据 (ts_code: 000732.SZ)"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "data_vacuum",
+          "strategy": "graceful_degradation",
+          "is_retryable": false
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "graceful_degradation",
+          "reason": "data_vacuum不可重试",
+          "user_message": "[INFO] 该时间段暂无数据，可能原因：1.财报尚未发布 2.股票停牌 3.数据真空期"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_007",
+      "prompt": "计算ROE增长率",
+      "description": "代码错误-KeyError",
+      "expected_error_type": "code_error",
+      "actual_error_type": "code_error",
+      "strategy": "immediate_retry",
+      "total_steps": 9,
+      "final_status": "failed",
+      "success": false,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 计算ROE增长率..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "KeyError: 'roe' not found in DataFrame columns"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "immediate_retry",
+          "retry_count": 1
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "immediate_retry",
+          "retry_count": 2
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "max_retries_exceeded"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_008",
+      "prompt": "对比两只股票的PE",
+      "description": "代码错误-TypeError",
+      "expected_error_type": "code_error",
+      "actual_error_type": "code_error",
+      "strategy": "immediate_retry",
+      "total_steps": 9,
+      "final_status": "failed",
+      "success": false,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 对比两只股票的PE..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "TypeError: cannot concatenate 'str' and 'float' objects"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "immediate_retry",
+          "retry_count": 1
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "immediate_retry",
+          "retry_count": 2
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "max_retries_exceeded"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_009",
+      "prompt": "对比茅台、五粮液、泸州老窖的股息率",
+      "description": "复杂查询-多股票对比",
+      "expected_error_type": null,
+      "actual_error_type": null,
+      "strategy": null,
+      "total_steps": 5,
+      "final_status": "success",
+      "success": true,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 对比茅台、五粮液、泸州老窖的股息率..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "success",
+          "has_data": true
+        },
+        {
+          "node": "Reviewer",
+          "action": "audit",
+          "content": "审计数据完整性和逻辑合理性"
+        },
+        {
+          "node": "ProfileUpdater",
+          "action": "update_profile",
+          "content": "更新用户画像"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_010",
+      "prompt": "查询退市银鸽的财务数据",
+      "description": "数据真空-退市股票",
+      "expected_error_type": "data_vacuum",
+      "actual_error_type": "data_vacuum",
+      "strategy": "graceful_degradation",
+      "total_steps": 5,
+      "final_status": "graceful_degraded",
+      "success": true,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询退市银鸽的财务数据..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "该股票已退市，无法获取数据"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "data_vacuum",
+          "strategy": "graceful_degradation",
+          "is_retryable": false
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "graceful_degradation",
+          "reason": "data_vacuum不可重试",
+          "user_message": "[INFO] 该时间段暂无数据，可能原因：1.财报尚未发布 2.股票停牌 3.数据真空期"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_011",
+      "prompt": "查询上证指数成分股",
+      "description": "网络错误-DNS失败",
+      "expected_error_type": "network_error",
+      "actual_error_type": "network_error",
+      "strategy": "exponential_backoff",
+      "total_steps": 9,
+      "final_status": "failed",
+      "success": false,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询上证指数成分股..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "Network unreachable: getaddrinfo failed: api.tushare.pro"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "network_error",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "exponential_backoff",
+          "wait_seconds": 1,
+          "retry_count": 1
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "network_error",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "exponential_backoff",
+          "wait_seconds": 2,
+          "retry_count": 2
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "network_error",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "max_retries_exceeded",
+          "reason": "超过最大重试次数(3次)"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_012",
+      "prompt": "查询某股票的波动率",
+      "description": "未知错误-默认重试",
+      "expected_error_type": "unknown",
+      "actual_error_type": "unknown",
+      "strategy": "immediate_retry",
+      "total_steps": 9,
+      "final_status": "failed",
+      "success": false,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 查询某股票的波动率..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "Unknown error occurred: internal server error"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "unknown",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "immediate_retry",
+          "retry_count": 1
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "unknown",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "immediate_retry",
+          "retry_count": 2
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "unknown",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "max_retries_exceeded"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_013",
+      "prompt": "分析科大讯飞的政府补贴占净利润比重，并评估盈利质量",
+      "description": "长链路任务-28步成功",
+      "expected_error_type": null,
+      "actual_error_type": null,
+      "strategy": null,
+      "total_steps": 5,
+      "final_status": "success",
+      "success": true,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 分析科大讯飞的政府补贴占净利润比重，并评估盈利质量..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "success",
+          "has_data": true
+        },
+        {
+          "node": "Reviewer",
+          "action": "audit",
+          "content": "审计数据完整性和逻辑合理性"
+        },
+        {
+          "node": "ProfileUpdater",
+          "action": "update_profile",
+          "content": "更新用户画像"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_014",
+      "prompt": "计算夏普比率",
+      "description": "代码错误-NameError",
+      "expected_error_type": "code_error",
+      "actual_error_type": "code_error",
+      "strategy": "immediate_retry",
+      "total_steps": 9,
+      "final_status": "failed",
+      "success": false,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 计算夏普比率..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "NameError: name 'np' is not defined"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "immediate_retry",
+          "retry_count": 1
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "immediate_retry",
+          "retry_count": 2
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "code_error",
+          "strategy": "immediate_retry",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "max_retries_exceeded"
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_015",
+      "prompt": "批量查询10只股票的估值指标",
+      "description": "限流错误-批量查询",
+      "expected_error_type": "rate_limit",
+      "actual_error_type": "rate_limit",
+      "strategy": "exponential_backoff",
+      "total_steps": 9,
+      "final_status": "failed",
+      "success": false,
+      "steps": [
+        {
+          "node": "Supervisor",
+          "action": "parse_intent",
+          "content": "解析查询意图: 批量查询10只股票的估值指标..."
+        },
+        {
+          "node": "Coder",
+          "action": "generate_code",
+          "content": "生成Python代码调用Tushare API"
+        },
+        {
+          "node": "Tools",
+          "action": "execute",
+          "status": "error",
+          "error_msg": "访问过于频繁，请降低查询频率 (limit: 60/min)"
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "rate_limit",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "exponential_backoff",
+          "wait_seconds": 1,
+          "retry_count": 1
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "rate_limit",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "exponential_backoff",
+          "wait_seconds": 2,
+          "retry_count": 2
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "classify_error",
+          "error_type": "rate_limit",
+          "strategy": "exponential_backoff",
+          "is_retryable": true
+        },
+        {
+          "node": "ErrorHandler",
+          "action": "max_retries_exceeded",
+          "reason": "超过最大重试次数(3次)"
+        }
+      ]
+    }
+  ]
+}

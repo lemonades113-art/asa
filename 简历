@@ -1,0 +1,123 @@
+基于 LangGraph StateGraph 实现 Supervisor+Coder+Reviewer+ProfileUpdater 
+四角色协作，采用 remaining_steps 物理队列防止任务早停，通过 
+BacktrackingRouter 实现四级策略递进（直接查询→分步查询→降级查询→拒答）。
+我设计了一个确定性的状态机架构。核心是 Supervisor 作为路由中枢，根据任务状态决定下一个执行者。
+Coder 负责代码生成和执行，调用 StatefulKernel 处理数据
+Reviewer 基于真实数据撰写分析报告
+ProfileUpdater 在任务结束后学习用户偏好
+关键技术点：我引入了 remaining_steps 物理队列——每次 Coder 执行成功后必须明确消耗一步，直到队列为空才允许 FINISH。这样避免了 LLM 自由决策导致的无限循环。"
+实现三层模型调度：smart(qwen-plus)用于强逻辑节点(Coder/Reviewer)，
+fast(qwen-turbo)用于轻量节点(ErrorHandler/ProfileUpdater)，降低95%成本。
+"通过 get_chat_model(model_type) 工厂函数统一管理：
+smart 层：Supervisor 路由决策、Coder 代码生成、Reviewer 报告撰写——用 qwen-plus
+fast 层：ErrorHandler 错误重试、ProfileUpdater 画像更新——用 qwen-turbo
+设计 [META][DATA] 双层输出协议：Coder 必须输出关键指标摘要供 Reviewer 
+校验，实现了基于 Tushare 字段规则的动态技能注入系统。
+面试回答：
+"我设计了一个数据透传协议解决 LLM 幻觉问题：
+强制输出标记：[DATA] 标记包含关键指标数值，[META] 标记包含执行过程
+Reviewer 校验：Reviewer 被要求严格基于 [DATA] 写报告，不能编造
+动态技能注入：通过 skills.json 预置字段映射规则，比如 dv_ttm 是百分比需要除以100
+这个设计让系统的可审计性大幅提升，Reviewer 的报告可以直接追溯到原始数据。"
+"怎么解决错误恢复和重试？"
+简历写法：
+plaintext
+实现 BacktrackingRouter 四层策略：直接查询→分步查询→替代字段→拒答。
+配合 total_retry_count=10 硬限制防止无限递归。
+面试回答：
+"错误处理分两层：
+微观层：ErrorHandler 检测错误类型（网络/API/代码），如果是代码错误，LLM 自动修复并重试
+宏观层：BacktrackingRouter 维护一个策略栈——当一个策略失败3次后，自动切换到下一个策略
+递归防护：我添加了 total_retry_count=10 的硬限制，加上 LangGraph 的 recursion_limit=100，确保系统不会无限循环。超过10次总重试后会强制拒答，不会hang住。"
+Q5: "记忆系统怎么设计的？"
+简历写法：
+plaintext
+设计分层记忆系统：ShortTermMemory 管理最近5轮对话上下文，
+LongTermMemory 持久化成功策略，支持语义检索和自动分类记录。
+面试回答：
+"参考 Letta/MemGPT 的设计，我实现了：
+短期记忆：不是简单的消息列表，而是基于 TTL 的动态淘汰——30分钟未访问的记忆权重减半
+长期记忆：每次任务成功后自动记录策略类型（分红查询/估值分析/财务分析）
+检索机制：当用户提问时，从长期记忆搜索相似历史，注入到 Supervisor 的 system_prompt
+这样系统会'记住'成功的解题思路，下次遇到类似问题自动复用。"
+项目名称：ASA 多智能体金融投研系统 v2.1
+
+技术栈：LangGraph + LangChain + Gradio + Tushare + ChromaDB + BGE-M3
+
+核心职责：
+1. 设计并实现基于 Supervisor 模式的多智能体协作架构
+2. 构建三层模型调度机制，区分 smart/fast 模型降低成本 95%
+3. 实现确定性状态机，通过 remaining_steps 物理队列防止无限循环
+4. 设计 [META][DATA] 双层输出协议，保障数据可审计性
+5. 开发分层记忆系统，支持成功策略的自动记录与检索
+
+关键指标：
+• 50 条测试用例通过率 90%+
+• Reviewer 报告准确率显著提升
+• 模型调用成本降低 70%+（分层调度）
+
+项目名称：ASA 多智能体金融分析系统 v2.1
+
+技术栈：LangGraph + LangChain + Gradio + Tushare + ChromaDB + BGE-M3
+
+核心职责：
+1. 设计基于 Supervisor 模式的多智能体协作架构（Coder/Reviewer/ProfileUpdater）
+2. 实现三层模型调度机制，区分 smart/fast 模型降低成本 95%
+3. 构建确定性状态机，通过 remaining_steps 物理队列防止无限循环
+4. 设计 [META][DATA] 双层输出协议，保障数据可审计性
+5. 开发分层记忆系统，支持成功策略的自动记录与语义检索
+6. 实现 QueryRewriter 多视角子查询分解，增强任务覆盖
+
+关键指标：
+• 50 条测试用例通过率 90%+
+• 分红查询准确率 95%+
+
+你们的协调层有哪些模块？ConflictResolver 怎么工作的？"
+文档说：
+ConflictResolver：投票/优先级/共识/人工仲裁
+实际代码：orchestrator.py L534-658 ✅ 存在但未集成面试回答：
+"协调层的代码已经完成，但目前是架构预留状态。ConflictResolver 实现了四种冲突解决策略：
+投票机制：按置信度加权投票
+优先级机制：按 Agent 优先级选择
+共识机制：寻找多数 Agent 同意的方案
+人工仲裁：置信度最高的提案标记为需人工确认
+由于金融分析场景中 Coder 负责数据、Reviewer 负责报告，职责边界清晰，实际运行中很少出现需要仲裁的分歧，所以当前版本暂时未集成这部分。"
+Q: "FallbackManager 四级降级策略具体是怎样的？"
+文档说：
+重试→切换Agent→人工介入→拒答
+实际代码：orchestrator.py L664-714 ✅ 存在但未集成面试回答：
+"FallbackManager 的四级降级策略是：
+RETRY：前 max_retries/2 次，重试当前 Agent
+SWITCH：中间次数，切换到有相同能力的替代 Agent
+HUMAN：如果配置了 human_callback，请求人工介入
+REJECT：最后优雅拒答
+但目前系统主要使用 BacktrackingRouter 的策略切换，这个预留模块尚未集成到主工作流。"
+Q: "ToolUsageGraph 工具转移图是怎么用的？"
+文档说：
+工具使用图与转移概率
+实际代码：
+orchestrator.py L67-197 ✅ 存在
+multi_agent.py L93-95 部分初始化
+multi_agent.py L2649-2670 在 ErrorHandler 中调用
+面试回答：
+"ToolUsageGraph 我做了一些集成尝试。在 ErrorHandler 中：
+记录每次工具转移的 from_tool → to_tool
+计算转移概率 P(B|A)
+第3次重试时查询历史转移概率，推荐替代工具
+但由于系统目前主要处理金融数据查询，工具调用链比较固定，这部分优化效果不明显，后续可以结合 RL 训练进一步发挥其价值。"
+Q: "你设计的 StateGraph 有哪些关键的状态字段？"
+简历写法：
+plaintext
+MultiAgentState 包含：
+- messages: 消息历史
+- next: 下一个执行者
+- remaining_steps: 物理队列
+- execution_status: 执行状态
+- skills_loaded: 已加载技能
+面试回答（现场可展开）：
+"我定义了 MultiAgentState 统一管理状态，关键字段：
+remaining_steps：物理队列，每次 Coder 执行成功后必须 pop() 一步，队列为空才允许 FINISH
+skills_loaded：记录已注入的技能，防止重复加载
+total_retry_count：总重试计数，防止无限循环
+execution_status：区分 pending/success/error
+这些设计让状态流转完全确定性，避免了 LangGraph 默认的自由决策带来的问题。"

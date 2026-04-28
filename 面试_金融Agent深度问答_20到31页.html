@@ -1,0 +1,855 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>金融Agent项目深度问答稿（20-31页）</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;line-height:1.65;background:#f4f6fb;color:#2c3e50}
+#nav{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #dde3ed;padding:5px 14px;z-index:100;display:flex;gap:3px;flex-wrap:wrap;align-items:center}
+#nav .title{font-weight:700;font-size:12px;color:#1e3a5f;margin-right:6px;white-space:nowrap}
+#nav button{padding:2px 8px;font-size:11px;border:1px solid #c8d0e0;background:#eef1f8;border-radius:3px;cursor:pointer;color:#374151}
+#nav button.active{background:#2563eb;color:#fff;border-color:#2563eb}
+.page{display:none;padding:44px 20px 20px;max-width:1300px;margin:0 auto}
+.page.active{display:block}
+h1{font-size:15px;font-weight:700;margin:0 0 9px;color:#1e3a5f;border-bottom:2px solid #2563eb;padding-bottom:4px}
+h2{font-size:13.5px;font-weight:700;margin:10px 0 5px;color:#1e3a5f;padding:3px 8px;border-left:3px solid #3b82f6;background:#f0f5ff}
+h3{font-size:13px;font-weight:700;margin:7px 0 3px;color:#1d4ed8}
+h4{font-size:12.5px;font-weight:600;margin:5px 0 2px;color:#374151}
+p{margin:3px 0}
+ul,ol{margin:3px 0 3px 16px}
+li{margin:2px 0}
+pre{background:#f0f4f8;border:1px solid #dde3ed;padding:7px 10px;font-size:11px;border-radius:3px;margin:5px 0;overflow-x:auto;white-space:pre-wrap;font-family:Consolas,monospace}
+code{background:#eef2ff;padding:1px 3px;border-radius:2px;font-size:11px;font-family:Consolas,monospace}
+pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:5px 0}
+th{background:#e8edf5;padding:4px 8px;text-align:left;font-weight:600;border:1px solid #d0d8e8}
+td{padding:3px 7px;border:1px solid #d0d8e8;vertical-align:top}
+tr:nth-child(even) td{background:#f7f9fc}
+blockquote{border-left:3px solid #93c5fd;padding:5px 10px;background:#eff6ff;margin:5px 0;font-style:italic}
+.box{background:#fff;border:1px solid #dde3ed;border-radius:3px;padding:7px 11px;margin:5px 0}
+.box-blue{background:#eff6ff;border-color:#bfdbfe}
+.box-green{background:#f0fdf4;border-color:#bbf7d0}
+.box-yellow{background:#fffbeb;border-color:#fde68a}
+hr{border:none;border-top:1px solid #dde3ed;margin:8px 0}
+strong{color:#1a365d}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tag{display:inline-block;background:#dbeafe;color:#1d4ed8;font-size:10.5px;padding:1px 5px;border-radius:2px;margin-right:3px}
+</style>
+</head>
+<body>
+<div id="nav">
+  <span class="title">深度问答（20-31）</span>
+  <button onclick="show(20)" id="b20" class="active">⑳ GRPO口述·第一性原理·十二节</button>
+  <button onclick="show(21)" id="b21">㉑ 金融Agent·最终深度口述版</button>
+  <button onclick="show(22)" id="b22">㉒ GRPO数独·十二节口述原版</button>
+  <button onclick="show(23)" id="b23">㉓ 金融Agent·口述原版·四机制</button>
+  <button onclick="show(24)" id="b24">㉔ SFT×GRPO·策略空间·三论文深析</button>
+  <button onclick="show(25)" id="b25">㉕ SFT合成缺陷·口述版·推理策略</button>
+  <button onclick="show(26)" id="b26">㉖ 工程踩坑纠错版·四坑代码核实</button>
+  <button onclick="show(27)" id="b27">㉗ 三机制大白话·IS修正·FFN·ref模型</button>
+  <button onclick="show(28)" id="b28">㉘ IS修正机制深挖·truncate vs mask</button>
+  <button onclick="show(29)" id="b29">㉙ vLLM关掉的决策逻辑·口述完整版</button>
+  <button onclick="show(30)" id="b30">㉚ cap压梯度·token_truncate口述·TRL含SFT</button>
+  <button onclick="show(31)" id="b31">㉛ 模型路径·adapter机制·两个旧模型对比</button>
+</div>
+<script>
+function show(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  document.getElementById('b'+n).classList.add('active');
+}
+</script>
+
+<!-- PAGE 20 -->
+<div class="page active" id="p20">
+<h1>GRPO面试口述完整版·第一性原理×论文深挖×工程真实×缺陷直视</h1>
+<blockquote>六篇论文：HardcoreLogic · LogicReward · FlowRL · PR-CoT · PRoSFI · CRV · QAE · MathForge (ICLR 2026) | 代码：sudoku_grpo.py + grpo_trainer.py(2213行)</blockquote>
+
+<div class="grid2">
+<div>
+<h2>§一 第一性原理定位——验证什么</h2>
+<div class="box-blue">
+在有唯一正确答案、完全可被程序验证、没有任何模糊空间的强约束符号推理任务上，3B小模型能否不靠记忆训练集、不靠外部工具、不靠大模型蒸馏，真正通过在线RL学会严谨的、逐步的、可验证的逻辑推理？
+</div>
+<p><b>选9×9而非4×4的理由（HardcoreLogic ICLR 2026三维难度）：</b></p>
+<table>
+<tr><th>维度</th><th>9×9表现</th></tr>
+<tr><td>搜索空间增加复杂度</td><td>$9^{81}$，约束传播后仍需20-40原子化推理步骤</td></tr>
+<tr><td>规则形式非常规变换</td><td>行+列+宫格三独立约束同时满足，一步出错全盘崩溃</td></tr>
+<tr><td>矛盾识别</td><td>可构造无解情况，无容错空间</td></tr>
+</table>
+<p><b>本质命题：</b>自回归模型=局部条件概率连续采样；数独=全局约束满足问题。两个计算范式的鸿沟不靠放大规模跨越，必须通过结构化推理设计+在线RL弥合。</p>
+
+<h2>§二 三个核心死穴（训练前诚实的失败模式分析）</h2>
+<table>
+<tr><th>死穴</th><th>机制</th><th>解法</th></tr>
+<tr><td>线索修改</td><td>原题线索和空白格token表示相同，模型无结构性理由区分"必须保留"与"可修改"，会选最容易满足约束的数字组合</td><td>双重检测AND门：match_clue（篡改→-2.0）+ non_zero_fill（复制题目不解题→0分）</td></tr>
+<tr><td>约束遗忘</td><td>9×9推理链2000-3000 token，注意力稀疏化，第30步忘记第5步约束，重复填数</td><td>强制每格输出"验证：第X行已有…第Y列已有…"显式约束状态快照</td></tr>
+<tr><td>奖励沙漠</td><td>81格全对概率≈0，12条轨迹奖励全0，组内方差→0，优势→0，梯度消失</td><td>二值终局奖励→七层连续过程奖励信号（LogicReward核心动机）</td></tr>
+</table>
+
+<h2>§三 GRPO为什么是唯一可行答案（显存数学）</h2>
+<table>
+<tr><th>方案</th><th>显存估算（3B FP16）</th><th>结论</th></tr>
+<tr><td>PPO（Actor+Critic）</td><td>参数6+梯度6+优化器24=36GB × 2个网络</td><td>4090 24GB完全超出，不可行</td></tr>
+<tr><td>GRPO（仅Actor）</td><td>量化1.5+LoRA 0.2+优化器6+KV Cache 12≈20GB</td><td>单卡勉强可行</td></tr>
+</table>
+<p><b>GRPO两个固有缺陷（亲眼目睹）：</b></p>
+<ul>
+<li><b>难题更新偏低（MathForge ICLR 2026）：</b>全失败时组内方差→0，优势函数退化成0/0的未定式。训练中70线索题学得快，65线索稍难题出现停滞平台。</li>
+<li><b>均值基线对离群值敏感（QAE ICLR 2026）：</b>1条意外高分轨迹→拉高组内均值→其他11条合理轨迹变负优势→训练早期奖励震荡。QAE解法：基线改为第40分位数，天然鲁棒。</li>
+</ul>
+
+<h2>§四 SFT冷启动·任务解耦</h2>
+<p><b>DeepSeek-R1-Zero前提：</b>671B超大模型可同时学"输出格式"和"推理内容"。3B必须分阶段。</p>
+<p><b>PRoSFI理论：</b>"models optimized for formal proof generation often struggle with structure and format following"→让3B在GRPO随机探索里同时摸索格式+逻辑，探索步数远超预算，等价于不可能收敛。</p>
+<p><b>质量门槛：</b>evaluate_model_fortified评估SFT Pass@1，超3/5格式合规才放行进RL。若不达标：第一步12条轨迹中10+条format_reward=0，entropy不存在，等价于高代价随机游走。</p>
+<p><b>任务解耦价值：</b>1000步预算里，SFT后第100步就在优化逻辑，而非第500步还在学写`&lt;think&gt;`标签。</p>
+</div>
+
+<div>
+<h2>§五 结构化CoT·论文驱动的推理外化工程</h2>
+<p><b>CoT的地位：</b>不是辅助工具，而是RL训练的物理载体。`&lt;think&gt;`标签把模型内部隐式推理外化为可观测文本轨迹，使奖励函数可验证中间步骤、格式梯度可引导收敛、SFT可预先注入推理范式。</p>
+<p><b>两段式结构：</b>`&lt;think&gt;`自由文本（坐标定位+候选数计算+唯一性排除三要素）/ `&lt;answer&gt;`严格约束81位纯数字。PRoSFI："outcome rewards overlook flawed intermediate steps, leading to unreliable reasoning"。</p>
+<table>
+<tr><th>格式奖励设计</th><th>权重</th><th>理由（CRV ICLR 2026 Oral）</th></tr>
+<tr><td>开放标签 &lt;think&gt; &lt;answer&gt;</td><td>0.1</td><td>开放标签可从提示词直接模仿</td></tr>
+<tr><td>闭合标签 &lt;/think&gt; &lt;/answer&gt;</td><td>0.2（2倍）</td><td>闭合标签必须推理走完后自主生成，CRV发现推理完整性=结构指纹关键判别指标</td></tr>
+</table>
+<p><b>PR-CoT（Poly-Reflective CoT arXiv:2601.07780）：</b>"single-dimensional reflection insufficient，PR-CoT guides self-assessment across multiple predefined angles"。数独行/列/宫=三个独立反思角度，system_prompt强制"按坐标锁定数字"诱导三维反思结构。GRPO进一步把prompt-level反思固化到参数级别。</p>
+<p><b>3500字符阈值：</b>70线索数独正常推理1500-2800字符（SFT数据实测）。超3500=病态行为（对同格反复验证 / 假设分支不遵循）。PR-CoT称为"过度反思引入矛盾"。设1500会让模型压缩推理跳步猜答案，破坏CoT核心目标。</p>
+
+<h2>§六 七层奖励系统·稠密可解释信号</h2>
+<p><b>LogicReward ICLR 2026：</b>"existing methods rely on outcome-based feedback, can produce correct answers with flawed reasoning"→需step-level logical correctness verification。</p>
+<table>
+<tr><th>奖励层</th><th>权重</th><th>核心设计</th></tr>
+<tr><td>exact_answer</td><td>10.0</td><td>奖励悬崖：80/81≈0.988，81/81→10.0（10倍跳跃）；博弈论：线性奖励→80%处局部最优陷阱</td></tr>
+<tr><td>clue_preservation</td><td>硬约束</td><td>match_clue（篡改→-2.0）AND non_zero_fill（不填空格→0）；期望：复制题目最多0.864分&lt;&lt;2.0惩罚</td></tr>
+<tr><td>row/col/block_logic</td><td>各1.0</td><td>只检查"模型填写位置"非整行覆盖；精确打在每次合法填充动作，非结果奖励而是过程奖励</td></tr>
+<tr><td>soft_format</td><td>0.1/0.2</td><td>闭合标签2×权重（CRV结构指纹）</td></tr>
+<tr><td>brevity</td><td>-0.5</td><td>超3500字符惩罚病态推理行为</td></tr>
+</table>
+<p><b>甜蜜点陷阱（FlowRL）：</b>12条轨迹停在78%-82%时，组内奖励方差极小→GRPO优势≈0→训练卡住。通过难度课程学习突破。</p>
+
+<h2>§七 工程踩坑·七个只有真跑过才会遇到</h2>
+<table>
+<tr><th>坑</th><th>现象/根因/解法</th></tr>
+<tr><td>LoRA双重包装</td><td>先get_peft_model再传GRPOTrainer→第2步loss NaN。GRPOTrainer内部有独立PEFT逻辑，双重包装破坏KL计算。解：传原始模型+peft_config。</td></tr>
+<tr><td>target_modules仅qkv</td><td>奖励震荡极剧烈，std=均值×3。FFN层负责候选数计算排除逻辑，不训FFN梯度全压注意力→不稳定。改all_linear后大幅改善。</td></tr>
+<tr><td>vLLM分布不一致</td><td>PagedAttention改变GPU随机数序列，采样分布与训练时logp计算有系统性偏差，重要性采样权重失真。vllm_importance_sampling_correction cap太小被截断，loss≈0。最终禁用vLLM换训练质量。</td></tr>
+<tr><td>max_completion_length</td><td>model max_seq=5120，prompt≈1200 tokens，4096留足生成空间且不OOM（8192→KV-cache翻倍直接OOM）。监控clipped_ratio前200步&lt;5%验证。</td></tr>
+<tr><td>多奖励量级不统一</td><td>exact=10.0，其他0.6-1.0。一次意外满分→总奖励离群→组内均值飙升→11条轨迹巨大负优势→KL从0.3跳1.8。解：各奖励函数内部归一化期望方差，不只靠组级归一化。</td></tr>
+</table>
+
+<h2>§八 训练动态四阶段</h2>
+<table>
+<tr><th>阶段</th><th>步数</th><th>主要矛盾</th><th>指标特征</th></tr>
+<tr><td>格式学习期</td><td>0-100步</td><td>学怎么写推理非推理本身</td><td>soft_format 0.2→0.8，exact不变，KL 0.1-0.2</td></tr>
+<tr><td>逻辑探索期</td><td>100-300步</td><td>行/列/宫奖励分化</td><td>row最快(序列连续)，col其次，block最慢(二维关注)</td></tr>
+<tr><td>平台震荡期</td><td>300-600步</td><td>reward_std↓→优势消失+KL跳变</td><td>kl 0.35→0.8，format 0.82→0.1，输出"111..."重复字符</td></tr>
+<tr><td>稳定收敛期</td><td>600-1000步</td><td>策略内化推理模式</td><td>KL 0.3-0.4，所有奖励平稳上升，出现"先全局扫描再局部填充"真实推理行为</td></tr>
+</table>
+<p><b>第三阶段干预：</b>epsilon 0.2→0.1（限制单步更新幅度）+ beta 0.001→0.003（强化KL惩罚）→3步内KL回落0.4。</p>
+</div>
+</div>
+
+<!-- full width: §九~§十二 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+<div class="box">
+<h2>§九 FlowRL视角·模式崩溃的深层代价</h2>
+<p><b>观察证据：</b>第100步12条轨迹推理风格各异（先填第一行/先填线索最多宫格/找最易格）；第700步所有轨迹变成"按行从左到右扫描"一种模式，仅措辞不同——这是模式崩溃的直接证据。</p>
+<p><b>FlowRL ICLR 2026数学机制：</b>"reward-maximizing methods over-optimize dominant reward signals, reducing diversity"。GRPO目标=max E[r(x,y)]，找期望最大值点，不是分布良好覆盖。12条轨迹收敛同一策略→方差→0→优势→0→梯度停滞。</p>
+<p><b>FlowRL解法：</b>引入可学习配分函数 $Z_\phi(x)$，目标分布 $p^*(y|x)\propto\exp(\beta\cdot r(x,y))\cdot\pi_{ref}(y|x)$，训练目标从期望奖励最大化→策略与目标分布间逆KL最小化。等价于：最大化期望奖励 + 策略熵 $H(\pi_\theta)$，熵项天然防止模式崩溃。</p>
+<p><b>实用建议：</b>exact_answer_reward从10.0缩小到3.0，减少主导信号过度压制多样性。或直接替换PPO-clip损失为FlowRL分布匹配损失。</p>
+</div>
+<div class="box">
+<h2>§十 推理-答案因果黑洞·伪推理问题</h2>
+<p><b>表面良好实际隐患：</b>格式稳定、奖励上升、规则合规率98%、篡改率3%以下——但`&lt;think&gt;`里的推理真的推导出了`&lt;answer&gt;`的答案吗？还是先内隐模式匹配生成答案再事后捏造理由？</p>
+<p><b>CRV ICLR 2026 Oral：</b>"attribution graphs of correct CoT steps possess distinct structural fingerprints from those of incorrect steps"。有一类"表面正确内部错误"的spurious reasoning——`&lt;think&gt;`完全合理，但模型实际执行的是模式匹配而非真实约束检查。</p>
+<p><b>观察证据：</b>训练后期2%-3%的输出中`&lt;think&gt;`的行约束分析与`&lt;answer&gt;`的填写结果不一致（说"只能填4"但填了5）。PRoSFI："RL guided by outcome-only rewards can degrade the faithfulness of reasoning chains"。</p>
+<p><b>我的奖励盲点：</b>七层奖励验证`&lt;answer&gt;`的81位数字是否满足数独规则，不验证`&lt;think&gt;`是否真正推导出这些数字。即使`&lt;think&gt;`全替换成胡言乱语，只要`&lt;answer&gt;`满足约束，所有奖励满分。</p>
+<p><b>轻量级修复方案（已预埋）：</b>提取`&lt;think&gt;`中"坐标(X,Y): 只能填N"形式的推理结论，检查`&lt;answer&gt;`对应位置是否填了N。约100行代码的坐标一致性检测（不需要Z3）。本次训练因显存和时间紧张未加，是最大未完成工作。</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+<div class="box-green">
+<h2>§十一 四个改进方向（论文直接给出路线图）</h2>
+<table>
+<tr><th>方向</th><th>来源</th><th>工程量</th><th>具体做法</th></tr>
+<tr><td>QAE分位数基线</td><td>QAE ICLR 2026</td><td>极低（1行代码）</td><td>baseline=rewards.mean() → rewards.quantile(0.4)。前40%正优势，后60%负优势，天然鲁棒，第600步KL跳变无需手动干预。</td></tr>
+<tr><td>PRoSFI结构化步骤验证</td><td>PRoSFI arXiv:2603.29500</td><td>中等（500行）</td><td>&lt;think&gt;升级为结构化字段（坐标+行约束集合+列约束集合+宫格约束集合+候选数+结论），规则引擎逐步验证约束计算正确性，从结果验证升级到步骤验证。</td></tr>
+<tr><td>FlowRL分布匹配损失</td><td>FlowRL ICLR 2026 arXiv:2509.15207</td><td>大（底层改动）</td><td>grpo_trainer.py增加配分函数网络 $Z_\phi(x)$，修改损失为逆KL最小化，同时优化策略参数和配分函数参数。根本解决模式崩溃。</td></tr>
+<tr><td>HardcoreLogic长尾变换</td><td>HardcoreLogic ICLR 2026 arXiv:2510.12563</td><td>评估实验</td><td>降低线索密度(50个线索)、非规则宫格、字母编码替换数字。急剧下降=学了分布内模式而非逻辑规则。</td></tr>
+</table>
+</div>
+<div class="box-yellow">
+<h2>§十二 面试高频追问·场景还原</h2>
+<table>
+<tr><th>追问</th><th>核心要点</th></tr>
+<tr><td>vs SwanLab 4×4的本质区别？</td><td>不只是规模，而是问题根本性质：4×4最多4空格十几步推理靠模板排除；9×9 11+空格30步才真正暴露自回归模型约束记忆和长链推理的本质缺陷。结构化CoT/多层过程奖励/SFT冷启动在4×4上完全没有存在必要性。</td></tr>
+<tr><td>GRPO有什么缺陷？</td><td>先算给面试官看（PPO=36GB×2=不可行），再主动说两缺陷：①难题更新偏低（MathForge正式证明）②均值基线对离群值敏感（QAE的发现）。我两个都遇到了，分别用过程奖励拆解和收紧裁剪缓解，如果重来直接用QAE分位数基线。</td></tr>
+<tr><td>奖励系统能防所有作弊？</td><td>不能。漏洞一：全填同一数字（如全填1且不与线索重复，双重检测通过，被exact_answer低分部分缓解）；漏洞二：伪推理（&lt;think&gt;胡言乱语但&lt;answer&gt;正确，需PRoSFI式步骤验证）；漏洞三：训练分布内模式记忆（需HardcoreLogic长尾变换检验）。</td></tr>
+<tr><td>项目最大价值是什么？</td><td>不是数值结果，而是完整可复现的在线RL工程验证平台，每个环节都有工程决策链条和论文支撑，且诚实暴露了GRPO三个核心局限（难题更新偏低/模式崩溃/推理真实性无法验证）并提供有论文支撑的改进方向。把问题说清楚比把准确率调高更有价值。</td></tr>
+<tr><td>对GRPO有保留意见？</td><td>有。GRPO奖励最大化本质决定它无法自然学会推理多样性，FlowRL分布匹配是更正确的理论框架。更深层：所有基于文本输出验证的奖励系统都面临理论天花板——验证结果而非推理过程内在有效性，CRV指出的推理忠实性问题是整个领域未解难题。2026年推理领域的核心问题已从"让模型给出正确答案"转移到"验证模型确实用正确推理过程得出正确答案"。</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- PAGE 21 -->
+<div class="page" id="p21">
+<h1>金融Agent系统·最终深度口述版</h1>
+<blockquote>第一性原理出发 · 代码可溯 · 论文对话不学术化 · 每段有清晰因果闭环 | PALADIN · Self-Healing Router · Problem Drift · DRAG · FGR-ColBERT</blockquote>
+
+<div class="grid2">
+<div>
+<h2>开场定调：核心哲学</h2>
+<div class="box-blue">
+大模型是概率系统，多步执行是概率连乘，连乘结果是指数级衰减——这不是某个模型做得不够好，是数学上的必然。因此整个设计不追求提高单步成功率，而是：<b>尽一切可能缩小概率模型参与决策的比例，把能变成确定性代码的部分全部变成代码，把不得不用模型的部分严格隔离在明确边界内，并为所有可预期的失败场景预先准备好确定性的恢复路径。</b>
+</div>
+
+<h2>第一性原理：概率为什么会崩塌</h2>
+<p>6步任务 × 0.95单步成功率 → $0.95^6=73.5\%$，四分之一概率出错，且步骤越多崩塌越快（指数退化非线性）。</p>
+<table>
+<tr><th>崩塌类型</th><th>机制</th><th>危害</th></tr>
+<tr><td>字段幻觉性崩塌</td><td>Tushare私有字段名不在训练语料，模型自信写<code>df['net_profit']</code>而正确字段是<code>n_income</code></td><td>Hard任务字段名写错率≈88%，第一步就崩</td></tr>
+<tr><td>数据真空性崩塌</td><td>季报未发布→空DataFrame→模型把"查询成功但无数据"解读为"任务完成"→用语言包装没有数据支撑的分析</td><td>最危险：无声失败，用户拿到格式完整但数字是编出来的报告</td></tr>
+<tr><td>目标漂移性崩塌</td><td>多步执行中Supervisor规划漂移，第3步生成"分析护城河"而非原始目标"计算ROE"（Problem Drift 2026，FOCUS指标，35%案例缺乏进展）</td><td>任务跑完但答非所问</td></tr>
+</table>
+
+<h2>机制一：状态机把概率决策关进笼子</h2>
+<p><b>对比：</b>ReAct框架每次工具调用后LLM自己决策下一步，控制流完全概率性。Self-Healing Router(2026.03)：ReAct平均123次LLM调用，工具失败后重新调LLM决策；改用Dijkstra图路由（失败边权重→∞），LLM调用123→9次。</p>
+<p><b>我的实现核心：</b>把能确定性化的控制流决策从LLM推理里剥离，变成代码逻辑。</p>
+<table>
+<tr><th>机制</th><th>代码位置</th><th>作用</th></tr>
+<tr><td>P1断言门控</td><td>multi_agent.py 729-795行</td><td>检查Coder返回是否含<code>[DATA]:</code>前缀：有→pop(0)推进；无→retry或ErrorHandler。纯代码二进制判断，不经LLM</td></tr>
+<tr><td><code>[DATA]:</code>标记</td><td>工具执行后处理函数</td><td>代码层强制添加，非提示词要求LLM加（LLM会偶尔遗忘）</td></tr>
+<tr><td>职责隔离</td><td>Supervisor/Coder/Reviewer</td><td>Supervisor持有remaining_steps决定做什么；Coder无权修改队列；Reviewer只做输出质量评估。代码层强制，堵死执行阶段偷改计划</td></tr>
+<tr><td>全局步数限制</td><td>硬限制raise异常</td><td>超25步强制终止，非提示词软限制</td></tr>
+</table>
+<p><b>结果：</b>35个真实压测任务，Medium任务E2E Pass@1≈87.5%，Hard任务目标漂移事件降至可控。</p>
+
+<h2>机制四：有状态执行内核解耦指令流和数据流</h2>
+<p><b>问题：</b>多步任务中间数据文本化塞进对话历史→每步历史增长→第5-6步上下文被几千token财务数据填满→LLM推理质量直线下降（上下文膨胀）。</p>
+<p><b>解法：</b>数据流和指令流物理分离。中间数据持久化到StatefulPythonKernel的<code>globals</code>字典（跨步骤共享Python命名空间）。第2步生成的<code>df_income</code>存globals，第3步代码直接用变量名引用，不需要文本化传给LLM。对话历史只含推理指令，上下文长度不随步骤数线性增长，10步任务≈3步任务token消耗。</p>
+<table>
+<tr><th>附加机制</th><th>实现</th></tr>
+<tr><td>AST静态分析</td><td>执行前代码字符串级规则拦截<code>os.system/subprocess/__import__</code>等高危调用，不依赖沙箱，误杀率低</td></tr>
+<tr><td>多用户隔离</td><td>每会话独立内核实例+独立Lock；用户间并行，用户内串行</td></tr>
+<tr><td>代码溯源</td><td>StatefulPythonKernel: lib.py 391-470行；KernelManager: lib.py 560-645行</td></tr>
+</table>
+</div>
+
+<div>
+<h2>机制二：RAG粒度对准问题粒度</h2>
+<div class="box-green">
+检索单元的粒度，要和问题的粒度完全匹配，否则召回是假召回。
+</div>
+<p><b>问题本质：</b>用户问"查股息率"→需要精确到字段级符号对齐（<code>dv_ttm</code>，<code>daily_basic</code>接口，<code>ts_code</code>+日期参数）。传统文档级RAG召回对了文档，但模型在几十个字段里自己找，会误选<code>dv_ratio</code>——字段幻觉的技术根源：检索粒度在文档级，答案在字段级，粒度错配。</p>
+<table>
+<tr><th>对比项</th><th>文档级RAG</th><th>字段级RAG（我的方案）</th></tr>
+<tr><td>chunk粒度</td><td>340篇文档，每篇数百-数千字</td><td>340篇→4032个字段级chunk，每chunk=接口名+字段名+类型+描述</td></tr>
+<tr><td>召回结果</td><td>返回含几十字段的文档，LLM自己找</td><td>直接返回"利润表接口 字段: n_income(float)-净利润"，即答案本身</td></tr>
+<tr><td>Coder使用方式</td><td>从参考材料判断，有概率猜错</td><td>读到chunk即知道写<code>df['n_income']</code>，无需判断</td></tr>
+</table>
+<p><b>FGR-ColBERT(2026.04)验证：</b>ColBERT保留token级表示做细粒度交互；FGR-ColBERT蒸馏细粒度相关性信号→110M参数小模型超越27B大模型。结论：检索精度取决于检索单元粒度是否和信息需求精确对齐，不取决于参数量。</p>
+<p><b>查询侧语义鸿沟：</b>用户说"股息率"，索引存<code>dv_ttm</code>，BM25直接检索命中率=0。解法：</p>
+<table>
+<tr><th>组件</th><th>作用</th><th>代码位置</th></tr>
+<tr><td>FINANCIAL_SYNONYMS字典</td><td>中文金融术语→API字段名（"股息率"→<code>dv_ttm, dv_ratio</code>）扩展复合查询串</td><td>lib.py 933-972行</td></tr>
+<tr><td>BM25+FAISS混合检索</td><td>向量检索(0.7)负责语义相似性；BM25(0.3)负责精确字段名命中；权重离线评估调出</td><td>lib.py 1186-1255行</td></tr>
+<tr><td>字段级Chunking解析</td><td>340篇→4032个chunk</td><td>lib.py 1133-1167行</td></tr>
+</table>
+<p><b>DRAG(ACL 2025)：</b>"幻觉叠加幻觉"——检索结果含噪声→生成模型把检索噪声和自身幻觉叠加→更严重错误。解法：多Agent辩论过滤噪声。我的方案：规则抽取+LLM意图识别+RAG三路召回取交集加权融合，是工程化多源验证。</p>
+<p><b>结果：</b>RAG Hit@3: 62%→<b>93.1%</b>；代码字段解析失败率: 5%→<b>1%</b></p>
+
+<h2>机制三：让错误分类，而不是让错误重试</h2>
+<p><b>四类本质不同的错误不能用同一策略处理：</b></p>
+<table>
+<tr><th>错误类型</th><th>正确处理策略</th><th>无脑重试后果</th></tr>
+<tr><td>字段名写错（KeyError）</td><td>提取错误字段→RAG查正确字段→结构化反馈注入Coder下次生成</td><td>每次都错，直到retry耗尽</td></tr>
+<tr><td>网络超时</td><td>指数退避重试</td><td>尚可，但无策略浪费时间</td></tr>
+<tr><td>Token权限不够</td><td>直接报错告知用户，不重试</td><td>永远失败，白耗retry预算</td></tr>
+<tr><td>数据真空（空DataFrame无异常）</td><td>标记为"不可重试"，报告"数据不存在"</td><td><b>死循环</b>，系统被拖死</td></tr>
+</table>
+<p><b>字段幻觉恢复路径（error_handlers.py 682-720行）：</b>正则提取错误字段名→压缩错误上下文(8行)→字段名+API名→RAG查正确字段→结构化反馈"字段<code>net_profit</code>不存在，正确是<code>n_income</code>"→注入Coder下次生成。全程不调LLM，纯规则+RAG。</p>
+<p><b>数据真空判定：</b>接口调用成功（无异常）AND DataFrame为空 AND 无权限错误→三条件同时成立才判定，避免误判网络超时为数据真空。</p>
+<p><b>60秒熔断降级：</b>Hard任务P95=62秒，Medium平均23秒，60秒是平衡点。触发后检查<code>stdout_capture</code>，若已有&gt;100字节部分数据→返回<code>[PARTIAL RESULT]</code>+已获取结果→Supervisor路由到Reviewer生成降级回复（告知进度+建议缩小查询范围）。带信息量的降级，非简单超时失败。</p>
+<p><b>vs PALADIN(2025.09)：</b>PALADIN在5万失败轨迹上微调，泛化性强，恢复率32.76%→89.68%，能处理未见过的失败模式。我的系统：规则覆盖有限集合，失败模式是相对有限集合，字段别名表O(1)查表不需LLM推理；覆盖到的场景恢复率100%，代价是无法泛化到预定义外的新型错误。金融API场景下这个取舍合理。</p>
+
+<h2>整体架构一句话总结</h2>
+<div class="box-yellow">
+<b>三层确定性约束对抗概率模型的天然不稳定性：</b>①状态机架构隔离概率决策，把控制流变成确定性路由；②字段级RAG对齐检索精度和代码生成的信息需求，消灭字段幻觉；③错误分类加有状态执行内核，让每种失败都有精确的恢复路径。
+<br>35个真实压测任务全部完成·87次Tushare API调用100%成功·10个真实故障场景9个零人工干预自愈
+</div>
+
+<h2>常见追问深度回答</h2>
+<table>
+<tr><th>追问</th><th>核心答案</th></tr>
+<tr><td>你的RAG和普通RAG本质区别？</td><td>普通RAG=文本对文本，同语义空间。我的场景=自然语言对API Schema的跨模态符号对齐。文档级RAG给LLM参考材料（LLM自己判断有概率出错）；字段级RAG直接给LLM答案（出错空间被消除）。</td></tr>
+<tr><td>自愈和PALADIN差在哪里？</td><td>泛化能力。PALADIN能处理训练中未见的失败模式，恢复率89.68%。我的规则覆盖在预定义的场景里100%正确，但无法泛化到新型错误。金融API失败模式是有限集合，这个取舍在当前场景下合理。</td></tr>
+<tr><td>概率崩塌有更准确的数据支撑？</td><td>未加自愈机制时Hard任务首次成功率≈42%（Tushare字段幻觉率88%，单步字段层面成功率仅12%）；加字段级RAG后字段幻觉率降到&lt;10%；加状态机门控后目标漂移消失；加错误分类自愈后Hard E2E Pass@1达85%+。提升路径清晰：靠系统架构对失败的覆盖，不靠单步成功率。</td></tr>
+<tr><td>为什么用LangGraph不用普通循环？</td><td>两个工程价值：①AgentState是TypedDict，节点输入输出类型安全，防止字段多出一个导致下游崩溃；②路由边显式声明，执行流程可视化，调试追踪容易。代价：多用户并发场景需完善日志体系按thread_id定位具体节点执行，调试成本真实存在。</td></tr>
+</table>
+
+<h2>系统在更大图景里的位置</h2>
+<div class="box">
+PALADIN研究失败恢复·Self-Healing Router研究控制流确定性·Problem Drift研究目标保持·DRAG研究检索噪声·FGR-ColBERT研究检索粒度——五篇论文从不同角度构建同一件事：让Agent从实验室走向工业系统。这个系统落在这个趋势里一个比较扎实的位置：<b>不够聪明但够稳定，不够通用但在金融场景够可靠，不是最先进但可解释、可追踪、可复现。这是现阶段工业级Agent应该有的样子。</b>
+<br><small>代码溯源：状态机 multi_agent.py 427-900行·P1断言 729-795行·字段Chunking lib.py 1133-1167行·FINANCIAL_SYNONYMS lib.py 933-972行·HybridRetriever lib.py 1186-1255行·错误分类 error_classifier.py 108-139行·别名纠错 error_handlers.py 682-720行·StatefulKernel lib.py 391-470行·KernelManager lib.py 560-645行</small>
+</div>
+</div>
+</div>
+</div>
+
+<!-- PAGE 22 -->
+<div class="page" id="p22">
+<h1>9×9数独GRPO强化学习项目｜面试口述完整版</h1>
+<blockquote>第一性原理×论文深挖×工程真实×缺陷直视 | HardcoreLogic·LogicReward·FlowRL·PR-CoT·PRoSFI·CRV·QAE·MathForge(ICLR 2026) | sudoku_grpo.py + grpo_trainer.py(2213行) | 每句话有因果链，每个数字有来历，每个设计决策有可被追问的逻辑闭环</blockquote>
+<div style="font-size:0.83em;line-height:1.38">
+<div class="grid2">
+<div>
+<h3 style="color:#1565c0;margin:5px 0 3px">§一 项目的第一性原理定位——我到底在验证什么</h3>
+<p style="margin:2px 0">我做这个项目的出发点，不是为了把数独准确率调到最高，而是为了回答一个当前大模型推理领域最本质的问题：在一个有唯一正确答案、完全可被程序验证、没有任何模糊空间的强约束符号推理任务上，3B小模型能不能不靠记忆训练集、不靠外部工具调用、不靠超大模型蒸馏，而是真正通过在线强化学习，学会严谨的、逐步的、可验证的逻辑推理？</p>
+<p style="margin:2px 0">我选9×9数独，而不是4×4，也不是数学计算，是有非常具体的理由的。HardcoreLogic这篇ICLR 2026的工作，系统性地定义了符号推理任务的三个硬核难度维度：搜索空间的增加复杂度、规则形式的非常规变换、以及故意构造无解情况的矛盾识别。9×9数独在这三个维度上都处于最高等级，它的搜索空间是 $9^{81}$，即使加入约束传播之后，推理链仍然需要二十到四十个原子化步骤，而且每一步都必须同时满足行唯一性、列唯一性、宫格唯一性三个独立约束，一步出错就全盘崩溃，没有任何容错空间。这就是为什么HardcoreLogic把它称为验证推理鲁棒性的黄金标准——因为在这个任务上，模型根本无法靠表面流畅的文本生成来蒙混过关，你要么真的推出来了，要么没推出来，中间没有灰色地带。</p>
+<p style="margin:2px 0">再说得更底层一些，这个任务之所以有验证价值，是因为它精确地暴露了自回归模型的本质局限。LLM的核心能力是根据上文预测下一个token，这件事和"根据全局约束推断正确填写"在计算结构上有本质区别。前者是局部条件概率的连续采样，后者是全局约束满足问题，这两个计算范式的鸿沟，不是靠放大模型规模就能跨越的，而必须通过结构化推理设计加在线强化学习来弥合。这就是我整个项目最核心的技术命题。</p>
+
+<h3 style="color:#1565c0;margin:5px 0 3px">§二 训练之前必须直视的三个核心死穴</h3>
+<p style="margin:2px 0">在正式设计训练方案之前，我强迫自己先做了一个诚实的失败模式分析，而不是一上来就堆奖励函数，因为我见过太多GRPO项目是因为没有想清楚任务本质就开始调超参，结果训出来的东西根本不是真正的推理能力提升，而是奖励作弊能力提升。</p>
+<p style="margin:2px 0"><b>第一个死穴，</b>是自回归生成天然倾向于修改原题线索。这件事从信息论的角度可以解释得很清楚：模型在生成81位数字答案的时候，它看到的是已经tokenize好的上下文，而原题中有数字的格子和有待填写的空白格子在token表示上是相同的，模型没有任何结构性的理由去区分"我必须保留这个格子"和"我可以修改这个格子"，于是它会很自然地选择最容易满足行列宫约束的数字组合，而这意味着它会修改原来已经给定的线索。SwanLab在他们4×4的实验中也观察到了完全相同的现象，他们的原话是"模型是全部输出，因此会遇到模型改题的情况"，但他们对这个问题的处理是相对简单的——用一个线索匹配率来计算奖励。我在9×9上发现，只有匹配率还不够，因为模型可以学会"线索都保留，但空格全填零"来绕过检测，所以我设计了双重检测：第一个检测原题线索位是否被篡改，触发则返回-2.0的硬惩罚；第二个检测所有空白位是否真的被填充了非零数字，用来防止"复制原题不解题"这种更隐蔽的作弊行为。这两个检测是AND关系，只有同时通过，才能进入正向奖励的计算。</p>
+<p style="margin:2px 0"><b>第二个死穴，</b>是长推理链必然出现的约束遗忘。9×9数独的推理过程，如果要做到真正的逐格分析，思维链至少需要2000到3000个token，在这个长度下，模型的注意力权重已经严重稀疏化，对前面建立的约束条件的记忆会不断衰减，于是就会出现一种典型的错误模式：在推理的第三十步，模型忘记了第五步已经在某一行填入了某个数字，又在相同的行填入了同一个数字，造成约束违反。这个问题在普通的chain-of-thought上无解，我的解决方案是强制要求模型在每填写一格之后，显式地输出"验证：第X行已有1/3/5，第Y列已有2/6，第Z宫已有4/7，因此本格只能填8"这种格式，相当于每一步推理都携带一个局部的约束状态快照，防止长距离的约束遗忘。</p>
+<p style="margin:2px 0"><b>第三个死穴，</b>是极端稀疏的奖励信号。在没有任何引导奖励的情况下，81格全对的概率对3B小模型而言接近于零，这意味着GRPO的12条轨迹里奖励可能全部为零，组内方差为零，优势函数为零，梯度消失，训练停滞。我把这个问题命名为"奖励沙漠"，在FlowRL论文里这个现象被归结为"GRPO的奖励最大化目标在稀疏奖励场景下会导致策略陷入无法跳出的局部平原"。解决这个问题的唯一正确方向，是把一个二值化的终局奖励，分解成一套覆盖推理过程每个中间步骤的连续奖励信号——这也是我设计七层奖励系统的根本动机。</p>
+
+<h3 style="color:#1565c0;margin:5px 0 3px">§三 框架选择——GRPO为什么是唯一可行的答案</h3>
+<p style="margin:2px 0">我对框架选择是有完整的工程理由推算的，而不是因为看过DeepSeek-R1的论文所以跟风用GRPO。PPO在我的场景里不可行的数学原因是这样的：PPO需要Actor和Critic两个网络，Critic的规模通常和Actor相当，对于3B模型来说，仅模型参数在FP16精度下就需要6GB显存，加上梯度6GB，加上优化器状态24GB（如果用标准AdamW），单Actor就需要约36GB，加上Critic又是36GB，单卡4090的24GB根本无法承受。即使我用4bit量化把模型压缩到1.5GB，用paged_adamw_8bit把优化器状态压缩到6GB，单个模型的训练预算也只有约20GB，第二个网络是完全无法加载的。</p>
+<p style="margin:2px 0">GRPO去掉Critic的代价，是每个prompt需要采样G=12条轨迹，推理成本是单次的12倍，但关键在于推理可以量化、可以用KV-cache复用，而训练阶段的Critic梯度是无法被这类优化压缩的，所以GRPO在我的显存约束下是唯一可行的选择。</p>
+<p style="margin:2px 0">但我也非常清楚GRPO的两个固有缺陷，这是我在实践中亲眼目睹的。<b>第一个</b>是MathForge论文在ICLR 2026上正式证明的难题更新幅度偏低问题：GRPO用组内均值作为基线，当一道题足够难、12条轨迹全部失败时，组内奖励均值接近零，标准差也接近零，优势函数退化成零除以零的未定式，这组数据对模型参数的实际更新几乎为零。我在训练数独时观察到，每道题70个线索保留、只填11个空格的最简单类型，模型学得很快，而一旦切换到65个线索保留、填16个空格的稍难类型，奖励曲线就会出现明显的停滞平台。<b>第二个</b>是ICLR 2026的QAE论文指出的均值基线对离群值敏感的问题：如果一组12条轨迹里有一条意外拿了高分，比如碰巧填对了大多数格子，这条轨迹会把组内均值拉高，让其他11条合理的轨迹都变成负优势，强迫模型惩罚它们，这会在训练早期引发严重的奖励震荡。QAE的解法是把均值基线换成第40分位数基线，只有前40%的输出拿到正优势，这样天然具备对离群值的鲁棒性，我在第600步遇到entropy collapse之后，手动收紧了裁剪范围并提高了KL系数来缓解这个问题，但如果重新设计，我会直接用QAE的分位数基线。</p>
+
+<h3 style="color:#1565c0;margin:5px 0 3px">§四 SFT冷启动——为什么不直接上GRPO</h3>
+<p style="margin:2px 0">这是很多面试官会问的一个问题，他们可能认为"不是说GRPO就可以从头训吗"，但DeepSeek-R1-Zero的那个实验其实已经给出了答案，只是人们忽视了那个实验的前提条件：它用的是671B的超大模型，参数容量足以支撑模型同时学习"输出格式应该是什么"和"推理内容应该是什么"这两件事情。</p>
+<p style="margin:2px 0">对于3B小模型，这两件事必须分阶段学习。PRoSFI论文对这个问题有非常清晰的理论表述，原话是"training models to write formal proofs typically requires much larger model sizes and significant data distillation, and models optimized for formal proof generation often struggle with structure and format following"。翻译成工程语言就是：让一个3B模型在GRPO的随机探索空间里，同时摸索出&lt;think&gt;/&lt;answer&gt;的格式规范和数独的推理逻辑，这件事需要的探索步数远超训练预算，实际上等价于不可能收敛。</p>
+<p style="margin:2px 0">SFT做的事情，是把"如何格式化输出"这个子任务提前用监督学习固化下来，让模型进入GRPO阶段时的探索空间里，有效轨迹的密度已经足够高——不需要从随机文本噪声里碰巧生成一条格式合规的轨迹，而是大多数轨迹天然就带着&lt;think&gt;/&lt;answer&gt;结构，奖励函数有东西可以打分，GRPO的梯度信号才能从一开始就有方向。这就是任务解耦的工程价值：把"学格式"和"学推理"分开，先在SFT阶段用高质量示例数据固化格式，再在GRPO阶段专注优化推理内容。</p>
+<p style="margin:2px 0">我在代码里设置了一个严格的质量门槛，<code>evaluate_model_fortified</code>函数会在进入GRPO前评估SFT模型的Pass@1，只有超过3/5的样本能够完整输出带正确格式的答案，才能放行进入强化学习阶段。这个门槛不是随意设置的，而是因为我在早期实验里发现，当SFT质量不达标时，GRPO第一步的12条轨迹里，超过10条会因为格式缺失而让format_reward返回零，organization entropy在这种情况下直接不存在，训练等于做了一次高代价的随机游走。</p>
+</div>
+
+<div>
+<h3 style="color:#1565c0;margin:5px 0 3px">§五 结构化CoT设计——论文驱动的推理外化工程</h3>
+<p style="margin:2px 0">CoT在这个项目里的地位，不是一个可选的辅助工具，而是整个强化学习训练的物理载体，这一点需要从根本上说清楚。GRPO训练的本质是：模型生成一条轨迹，奖励函数对这条轨迹打分，分数高低决定策略更新方向。如果没有结构化的CoT，模型的"推理过程"就是完全不可观测的黑盒，奖励函数只能盯着最终答案打分，这就回到了稀疏奖励问题。&lt;think&gt;标签做的事情，本质上是把模型内部的隐式推理过程外化成可观测的文本轨迹，一旦轨迹可见，就有了以下可能：奖励函数可以验证推理的中间步骤，而不只是结果；格式奖励的梯度信号可以引导RL训练收敛方向；SFT阶段可以预先注入高质量推理范式，降低GRPO的探索成本。这三个可能性构成了本项目CoT设计的全部逻辑。</p>
+<p style="margin:2px 0">在格式奖励的权重分配上，我做了一个非对称设计，这个细节很多人会忽视但其实非常关键。开放标签&lt;think&gt;和&lt;answer&gt;的权重是0.1，而闭合标签&lt;/think&gt;和&lt;/answer&gt;的权重是0.2，闭合标签是开放标签的两倍。这不是随意的美化，背后有CRV论文给出的理论支撑。CRV全称是Circuit-based Reasoning Verification，它在ICLR 2026 Oral的研究发现是："attribution graphs of correct CoT steps possess distinct structural fingerprints from those of incorrect steps"，也就是说正确推理步骤和不完整推理步骤在模型内部计算图上有不同的结构特征，而推理完整性是这种结构特征最关键的判别指标之一。用工程语言翻译：一个有开放标签但没有闭合标签的输出，意味着推理在中途断掉了，这在计算上和"完整推理然后给答案"是有本质区别的。在GRPO训练早期，模型非常容易出现"输出&lt;think&gt;但忘记输出&lt;/think&gt;"的截断行为，因为开放标签可以直接从提示词示例中模仿，而闭合标签必须在推理真正走完之后才能自主生成。2:1的权重比，是用奖励梯度在强化"完整推理轨迹"这个行为，而不是让模型满足于输出半截推理。</p>
+<p style="margin:2px 0">PR-CoT（Poly-Reflective Chain-of-Thought）给了我另一个深层的CoT设计框架。这篇2026年的工作核心主张是"single-dimensional reflection methods offer insufficient improvements，PR-CoT guides the LLM to self-assess its reasoning across multiple predefined angles"，也就是说多维度反思（行约束检查、列约束检查、宫格约束检查三个独立角度）比单维度反思（只看答案对不对）效果好得多，尤其在逻辑谜题任务上这个差距最显著。我的system_prompt里强制要求模型"按坐标锁定数字"，这其实是在用提示工程诱导模型产生PR-CoT式的三维反思结构——每次填入一个数字，必须同时考虑行、列、宫三个约束维度，这就是三个角度的同步反思。更进一步，我通过GRPO的奖励信号，试图把这种多维反思能力从提示词层面固化到模型参数层面，这是我的项目相比于PR-CoT原论文（它只在GPT-4的zero-shot场景下验证）更进一步的地方——我在尝试把prompt-level的反思结构，通过RL的梯度积累训练成参数级别的能力。</p>
+<p style="margin:2px 0">3500字符的长度惩罚阈值，我也要说清楚为什么是3500而不是更小的数字。对于70个线索保留的数独（最多11个空格），正常的逐格推理链大约在1500到2800字符之间，这是从我的SFT训练数据分析出来的。把惩罚阈值设在3500，意味着正常推理完全不受影响，只有超过阈值的情况才代表模型大概率进入了两类病态行为：要么是对同一格子反复验证而不推进，要么是生成了大量假设分支但最终的&lt;answer&gt;并不遵循这些假设，PR-CoT论文把这叫做"过度反思引入矛盾"，是思维链信噪比下降的典型表现。如果把阈值设成1500，模型就会为了避免惩罚而压缩推理过程，跳过中间步骤直接猜答案，这等同于破坏了CoT设计的核心目标。</p>
+
+<h3 style="color:#1565c0;margin:5px 0 3px">§六 七层奖励系统——把二值判分转化成稠密可解释信号</h3>
+<p style="margin:2px 0">LogicReward这篇ICLR 2026的工作，给了我整个奖励系统设计的哲学基础。它的核心论断是"existing training methods largely depend on outcome-based feedback, which can produce correct answers with flawed reasoning"，也就是说单纯的结果奖励不但不够，而且会主动培养出"错误推理路径得出正确答案"这种伪能力。它提出的解法是step-level logical correctness verification，对每一个推理步骤验证逻辑有效性，而不只是验证最终结果。我的七层奖励设计，就是在没有形式化证明器的前提下，用规则验证函数来实现同等效果的步骤级监督。</p>
+<p style="margin:2px 0">精确答案奖励的设计里，有一个刻意制造的奖励悬崖：81格完全正确给10.0分，80格正确只给80/81≈0.988分，10倍的跳跃不是随意的，而是一个博弈论上的设计——如果奖励是线性的，模型会在80%准确率附近形成稳定局部最优，因为从79%提升到80%和从80%提升到81%的梯度贡献完全相同，模型没有理由格外努力冲刺最后那几格。非线性悬崖告诉优化器：完全正确才是真正的目标，局部改进是不够的。但这个设计也带来了一个我在训练中实际遇到的问题，就是FlowRL论文所说的"甜蜜点陷阱"——当12条轨迹都停在78%~82%准确率时，组内奖励方差极小，GRPO的优势函数接近零，梯度停滞，训练在这里卡住了很长时间，后来通过引入难度课程学习才突破。</p>
+<p style="margin:2px 0">线索保真奖励的双重检测机制，背后是一个对模型作弊行为的完整博弈分析。假设没有这个奖励函数，模型的最优作弊策略是什么？第一种作弊是"改题答题"；第二种是"复制题目"，把原题81位字符串直接输出到&lt;answer&gt;里，原题中已经有70个非零数字，exact_answer_reward会因为这70格都"对了"而给出相当高的部分分数。我通过match_clue检测第一种作弊（篡改线索）并给出-2.0的重惩罚，通过non_zero_fill检测第二种作弊（不填空格）并给出零分，-2.0的惩罚幅度也不是随机的，我做过期望收益估算：复制题目最多能从exact_answer_reward拿到70/81≈0.864分，但如果触发线索篡改检测，期望损失远超这个收益，所以-2.0能在博弈上彻底封死这条捷径。</p>
+<p style="margin:2px 0">行列宫三维约束奖励的设计有一个很重要的工程细节，就是我只检查"模型填写的位置"而不是检查整行整列的全覆盖。原因是对于70个线索保留的数独，每一行最多只有1~2个空格，我没法要求"行内1-9全覆盖"，因为这要求整行数字加起来恰好1-9各一次，但70个线索里本来就已经有7-8个格子有数字了，我真正想奖励的是"模型在填充空白格时没有重复线索、没有填零"，也就是局部合法填充行为，而不是全局数独合法性。这种设计让奖励函数能够精确地打在"每一次合法填充动作"上，和LogicReward的step-level reward在层级设计上完全同构。</p>
+
+<h3 style="color:#1565c0;margin:5px 0 3px">§七 工程踩坑——只有真正跑过才会遇到的问题</h3>
+<p style="margin:2px 0"><b>LoRA加载方式的正确姿势。</b>我最开始的做法是先用<code>get_peft_model(model, lora_config)</code>包装好模型，再传给<code>GRPOTrainer(model=peft_model)</code>，这在SFTTrainer里是完全正确的，但在GRPOTrainer里会导致训练崩溃，表现是从第二步开始loss出现NaN。后来翻TRL源码才发现，GRPOTrainer在<code>__init__</code>里有独立的PEFT处理逻辑，它判断<code>is_peft_model(model)</code>的返回值来决定是否需要加载参考模型，如果传入已经包装好的PEFT模型，这个逻辑会出现双重包装，导致adapter的禁用/启用机制失效，进而破坏KL散度的计算。正确的做法是传入原始模型加<code>peft_config</code>，让TRL内部处理PEFT的初始化。</p>
+<p style="margin:2px 0"><b>LoRA目标层选择对训练稳定性的决定性影响。</b>我最开始只训练qkv投影层，结果训练过程中奖励震荡极其剧烈，标准差高达均值的3倍，每5步的数值跳动范围都超过20%。改成<code>target_modules=all_linear</code>之后，涵盖了注意力的输出投影<code>o_proj</code>和FFN的三个线性层（<code>gate_proj, up_proj, down_proj</code>），震荡立刻大幅改善。原因是数独推理不只需要注意力机制记住约束关系，还需要FFN层做大量的候选数计算和排除逻辑，FFN在Transformer里承担的是"模式存储和特征变换"的工作，如果FFN不参与训练，模型无法更新推理中的具体计算逻辑，梯度全部压在注意力层，导致训练不稳定。</p>
+<p style="margin:2px 0"><b>vLLM加速的性能代价。</b>我在AutoDL的多卡环境里尝试过vLLM推理加速。但实际结果是，开启vLLM的训练效果明显差于不开vLLM的版本。原因在于vLLM的PagedAttention机制会改变GPU的随机数生成序列，导致采样分布和PyTorch原生采样有微小但稳定的差异，而GRPO的训练信号非常依赖采样分布的准确性。TRL为此引入了<code>vllm_importance_sampling_correction</code>来修正这个问题，但我实测发现默认的cap值太小，差异大时修正权重会被截断，loss接近零，效果反而更差。最终我选择完全禁用vLLM，用额外的训练时间换取训练质量。</p>
+<p style="margin:2px 0"><b>max_completion_length的设置是显存和截断率的精确平衡。</b>我设置的是4096，这个数字不是随意的。我的model max_seq_length是5120，一条prompt编码后大约占1000~1200 tokens，4096是用满生成空间后留给prompt的最小安全边际，再小就会出现prompt被截断的情况。另一方面，如果把max_completion_length设成8192（扩大一倍），KV-cache的占用会翻倍，在G=12的采样条件下直接OOM。4096是在不OOM的前提下，给推理链留出足够空间的最优解。我在训练中监控了<code>completions/clipped_ratio</code>这个指标，在前200步里这个比例维持在5%以下，说明4096对大多数数独推理都是够用的。</p>
+<p style="margin:2px 0"><b>多奖励函数量级不统一导致的梯度不稳定。</b>在我加入<code>exact_answer_reward</code>（满分10.0）和其他奖励（满分0.6~1.0）之后，训练的前50步出现了一次严重的KL跳变，从0.3直接跳到1.8。排查原因是：GRPO在做优势计算时，是把所有奖励函数的输出加总之后再做组内归一化，当<code>exact_answer_reward</code>有一次意外给出了满分10.0，而其他奖励在该步普遍偏低时，总奖励出现了一个大幅偏高的离群值，把组内均值拉上去，让其他11条轨迹全部变成巨大的负优势，一次梯度更新就把策略推离了太远。我的解决方案是：在奖励函数内部做输出范围的归一化，确保不同奖励函数的期望方差大体相当，而不是简单地靠scale_rewards的组级归一化来处理。</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;font-size:0.83em">
+<div class="box">
+<h3 style="color:#2e7d32;margin:3px 0">§八 训练稳定性——训练动态的四阶段与诊断逻辑</h3>
+<p style="margin:2px 0"><b>第一阶段是格式学习期，</b>大约在0到100步之间。在这个阶段，<code>soft_format_reward</code>的均值从初始的约0.2快速提升到0.8以上，而<code>exact_answer_reward</code>几乎没有变化，KL散度稳定在0.1~0.2之间，entropy基本不变。这个阶段模型在做的事情，是学习"怎么写推理"而不是"怎么推理"，也就是在SFT锚定的格式基础上，通过GRPO的格式奖励梯度，进一步强化&lt;think&gt;/&lt;answer&gt;结构的输出稳定性。这个阶段不需要干预，让它自然走完。</p>
+<p style="margin:2px 0"><b>第二阶段是逻辑探索期，</b>大约在100到300步之间。<code>soft_format_reward</code>开始稳定，行列宫三维约束奖励开始出现分化——<code>row_logic_reward</code>提升最快，<code>col_logic_reward</code>和<code>block_logic_reward</code>紧随其后，这个顺序是有道理的，行约束最容易被注意力机制捕捉（因为行内的token在序列上是连续的），列约束需要跨越较远的位置，宫格约束需要同时关注两个维度，所以学习速度依次递减。这个阶段的主要风险是entropy开始缓慢下降，说明模型在收敛到某种解题模板，如果下降太快，需要警惕接下来的优势消失。</p>
+<p style="margin:2px 0"><b>第三阶段是平台震荡期，</b>大约在300到600步之间，这是整个训练中最危险的阶段。<code>reward_std</code>会显著下降，12条轨迹的奖励越来越接近，组内方差在接近零，GRPO的优势函数开始退化。我在第600步前后观察到了明显的KL跳变，从稳定的0.35突然跳到0.8，<code>soft_format_reward</code>从0.82跌到0.1，在SwanLab的samples/responses表格里查看原始输出，发现模型开始输出重复字符。我的干预措施是两步：第一步把PPO clip的<code>epsilon</code>从默认的0.2收紧到0.1；第二步把<code>beta</code>从0.001提高到0.003，加强KL惩罚，把策略拉回参考模型附近。这两个操作让KL在3步之内回落到0.4。</p>
+<p style="margin:2px 0"><b>第四阶段是稳定收敛期，</b>大约在600到1000步之间。KL散度稳定控制在0.3~0.4，所有奖励指标平稳上升，<code>completions/clipped_ratio</code>维持在5%以下，entropy在一个合理的值小幅波动。在这个阶段，我在原始输出里开始看到真正的推理行为——模型会先遍历所有空格标注候选数，再回来填写唯一候选格，而不是简单地顺序扫描，这种"先全局扫描再局部填充"的行为在SFT训练数据里是存在的，但现在是模型通过RL强化学习自发稳定下来的，这说明GRPO的梯度信号确实把这种策略内化到了参数里。</p>
+</div>
+<div class="box">
+<h3 style="color:#2e7d32;margin:3px 0">§九 FlowRL视角下的模式崩溃——GRPO奖励最大化的深层代价</h3>
+<p style="margin:2px 0">到这里，我需要坦诚地说一个问题：训练稳定了、指标好看了，但我的模型真的学会了推理多样性吗？还是说它只是学会了一种固定的解题模板，然后把这个模板反复套用在12条轨迹的每一条上？</p>
+<p style="margin:2px 0">FlowRL的核心论点：reward-maximizing methods tend to over-optimize dominant reward signals while neglecting less frequent but valid reasoning paths, thus reducing diversity。GRPO在做的事情，本质上是在找那个"大概率能给高分"的解题模式，然后把策略的概率质量越来越多地集中在这一条路上。对于9×9数独而言，这条主导路径就是"按行扫描、找唯一候选数、逐格填写"这种最直接的贪心策略。一旦模型发现这条路径的平均奖励最高，GRPO的优化目标就会不断强化它，而那些用其他方式的非主流解题路径，即使它们在某些特定题型上效率更高，也会被逐渐压制，最终在12条采样轨迹里消失。</p>
+<p style="margin:2px 0">FlowRL的数学机制：引入可学习配分函数 $Z_\phi(x)$，目标分布 $p^*(y|x) \propto \exp(\beta \cdot r(x,y)) \cdot \pi_{ref}(y|x)$，训练目标从"最大化期望奖励"变成"最小化策略分布与目标分布之间的逆KL散度"，等价于最大化期望奖励 + 策略熵 $H(\pi_\theta)$，熵项天然防止模式崩溃。</p>
+<p style="margin:2px 0"><b>实用建议：</b>exact_answer_reward从10.0缩小到3.0，减少主导信号过度压制多样性；或直接替换PPO-clip损失为FlowRL分布匹配损失。</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;font-size:0.83em">
+<div class="box">
+<h3 style="color:#6a1b9a;margin:3px 0">§十 最深的局限——推理过程与答案之间的因果黑洞</h3>
+<p style="margin:2px 0">表面上看，我的训练效果很好：格式稳定、奖励上升、规则合规率接近98%、原题篡改率从35%降到3%以下。但有一个根本性的问题没有被解决：推理-答案因果断裂，简称伪推理问题。模型的&lt;think&gt;块里写着完整的推理过程，但这两件事之间真的存在因果关系吗？模型真的是用&lt;think&gt;里的推理推导出了&lt;answer&gt;里的答案吗？还是先用某种内隐的模式匹配生成了答案，然后在&lt;think&gt;里事后捏造了一套看起来合理的理由？</p>
+<p style="margin:2px 0">PRoSFI："RL guided by outcome-only rewards can degrade the faithfulness of reasoning chains." CRV发现有一类"表面正确、内部错误"的spurious reasoning——&lt;think&gt;内容看起来完全合理，但模型实际的内部计算路径并没有真正执行约束检查，而是在做模式匹配。我的七层奖励系统里验证的是&lt;answer&gt;里那81位数字是否满足数独规则，不验证&lt;think&gt;是否真正推导出了这些数字。即使把&lt;think&gt;全替换成胡言乱语，只要&lt;answer&gt;满足约束，所有奖励函数依然会给出满分。</p>
+<p style="margin:2px 0">我在代码里预埋了一个修复伪推理问题的轻量级方案：通过坐标匹配来检测&lt;think&gt;和&lt;answer&gt;之间的因果一致性。提取&lt;think&gt;块中出现的所有"坐标(X,Y): 只能填N"形式的推理结论，检查&lt;answer&gt;的对应位置是否真的填了N。约100行代码，不需要Z3。这次训练里没有加这一层，是这个项目最大的未完成工作。</p>
+</div>
+<div class="box">
+<h3 style="color:#6a1b9a;margin:3px 0">§十一~十二 改进方向 + 面试追问</h3>
+<p style="margin:2px 0"><b>QAE分位数基线：</b>baseline=rewards.quantile(0.4)，1行代码，天然鲁棒对离群值，如果重来直接用。</p>
+<p style="margin:2px 0"><b>PRoSFI步骤验证：</b>&lt;think&gt;升级为结构化字段（坐标+行约束集合+列约束集合+宫格约束集合+候选数+结论），规则引擎逐步验证，从结果验证升级到步骤验证，约500行代码。</p>
+<p style="margin:2px 0"><b>FlowRL分布匹配损失：</b>引入配分函数网络 $Z_\phi(x)$，修改损失为逆KL最小化，根本解决模式崩溃。工程量大但有论文实现细节可参考。</p>
+<p style="margin:2px 0"><b>HardcoreLogic长尾变换：</b>降低线索密度、非规则宫格、字母编码，验证模型是否真的学会了逻辑规则。</p>
+<hr style="margin:5px 0">
+<p style="margin:2px 0"><b>追问"这个项目最大价值是什么"：</b>不是数值结果，而是完整可复现的在线RL工程验证平台，每个环节都有工程决策链条和论文支撑，且诚实暴露了GRPO三个核心局限（难题更新偏低/模式崩溃/推理真实性无法验证）并提供有论文支撑的改进方向。把问题说清楚比把准确率调高更有价值。</p>
+<p style="margin:2px 0"><b>追问"对GRPO有保留意见"：</b>有。GRPO奖励最大化本质决定它无法自然学会推理多样性，FlowRL分布匹配是更正确的理论框架。更深层：所有基于文本输出验证的奖励系统都面临理论天花板——验证结果而非推理过程内在有效性，CRV指出的推理忠实性问题是整个领域未解难题。2026年推理领域的核心问题已从"让模型给出正确答案"转移到"验证模型确实用正确推理过程得出正确答案"。</p>
+<p style="margin:2px 0;color:#666;font-style:italic">论文基础：HardcoreLogic(ICLR 2026,arXiv:2510.12563)·LogicReward(ICLR 2026,arXiv:2512.18196)·FlowRL(ICLR 2026,arXiv:2509.15207)·PR-CoT(arXiv:2601.07780)·PRoSFI(arXiv:2603.29500)·CRV(ICLR 2026 Oral,arXiv:2510.09312)·QAE(ICLR 2026)·MathForge(ICLR 2026)</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- PAGE 23 -->
+<div class="page" id="p23">
+<h1>㉓ 金融Agent系统·最终深度口述版（四机制·原版表述）</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-blue">
+<h3 style="color:#1a237e;margin:3px 0">开场定调：我想先把问题本身讲清楚</h3>
+<p style="margin:2px 0">面试官您好，我先不急着讲技术栈，我想先说一件事：这个系统从立项到最终压测，让我印象最深的不是做了什么，而是发现了什么不能做、以及为什么不能做。</p>
+<p style="margin:2px 0">过去两三年 Agent 领域有一个越来越清晰的共识，2026 年的几篇论文把它说得很明确了——PALADIN、Self-Healing Router、谷歌的多 Agent 目标漂移研究、ACL 2025 的 DRAG、还有今年的 FGR-ColBERT。这些工作切入点各不相同，有的在研究工具调用失败，有的在研究检索噪声，有的在研究多智能体目标漂移，但我把它们放在一起看，发现它们其实都在回答同一个更底层的问题：为什么一个在单步表现优秀的大模型，在真实的多步工具调用场景里会系统性地失控？</p>
+<p style="margin:2px 0">这个问题的答案，我现在能用一句话说清楚：因为大模型是概率系统，而多步执行是一个概率连乘的过程，连乘的结果是指数级衰减，这不是某个模型做得不够好，是数学上的必然。</p>
+<p style="margin:2px 0">正是基于这个判断，我这个项目的整个设计逻辑就变了。我没有去追求用更强的模型、更精心的 Prompt 来提高单步成功率，而是把整个系统重新设计成：尽一切可能缩小概率模型参与决策的比例，把能变成确定性代码的部分全部变成代码，把不得不用模型的部分严格隔离在明确边界内，并且为所有可预期的失败场景预先准备好确定性的恢复路径。</p>
+<p style="margin:2px 0">这是整个设计的核心哲学，接下来我讲的每一个具体机制，都能回溯到这个判断上。</p>
+</div>
+<div class="box">
+<h3 style="color:#1a237e;margin:3px 0">第一性原理：概率为什么会崩塌</h3>
+<p style="margin:2px 0">我先把数学摆出来，因为这是理解后面所有设计决策的基础。</p>
+<p style="margin:2px 0">一个用户问"分析贵州茅台的财务健康状况，给出投资建议"，这在我们的系统里会被分解成六个步骤：查利润表、查资产负债表、计算 ROE、计算资产负债率、做财务健康分析、生成投资建议。假设每一步大模型生成的代码正确率是 95%——这已经是个相当乐观的估计了——那六步串行执行下来，整体成功率是 0.95 的 6 次方，也就是 $0.95^6 = 73.5\%$。四分之一的概率这个任务会在某个步骤出错。而且这还不是线性退化，是指数退化——步骤越多，崩塌越快。</p>
+<p style="margin:2px 0">这个数字背后有三种具体的崩塌形式，每一种在我的压测数据里都有真实的案例。</p>
+<p style="margin:2px 0"><b>第一种，我叫它字段幻觉性崩塌。</b>大模型的训练语料里不包含 Tushare API 的私有字段名——它知道"净利润"是什么，但它不知道在 Tushare 的利润表接口里净利润字段叫 <code>n_income</code> 而不是 <code>net_profit</code>。它会非常自信地写出 <code>df.iloc[0]['net_profit']</code>，然后代码运行时直接 KeyError，整个步骤崩掉。我在 35 个压测任务里发现，所有 Hard 难度任务里字段名写错的概率接近 88%，也就是说几乎每一次复杂的财务分析，第一步就会出错。这不是偶发问题，是系统性的必然。</p>
+<p style="margin:2px 0"><b>第二种，我叫它数据真空性崩塌。</b>大模型生成的代码在语法上完全正确，接口调用也成功了，但返回的是一个空 DataFrame。比如查贵州茅台 2024 年第四季度的资产负债表——季报可能还没发布，接口成功执行但返回空数据。这时候模型面对一个空 DataFrame，如果没有硬性门控，它会把"查询成功但无数据"解读为"任务已完成"，然后直接跳到生成结论阶段，用语言包装一个看起来合理但完全没有数据支撑的分析。这是金融场景里最危险的失败形式，因为它是无声的——用户拿到一个格式完整、措辞专业的分析报告，但里面的数字是模型编出来的。</p>
+<p style="margin:2px 0"><b>第三种，我叫它目标漂移性崩塌。</b>这是谷歌那篇多 Agent 论文（Problem Drift，2026）里研究的问题。他们发现多轮辩论场景里，超过一定轮次之后，Agent 会开始"忘记原始问题"，在一个已经偏离的方向上越讨论越远。他们定义了一个 FOCUS 指标来量化这种漂移，发现 35% 的案例出现了"缺乏进展"。在我的系统里，这个问题的表现形式更隐蔽——Supervisor 在多步执行中，偶尔会出现规划漂移，比如用户问"计算茅台的 ROE"，规划到第三步的时候，生成了一个"分析茅台的护城河"这样的步骤，完全偏离了原始目标。</p>
+<p style="margin:2px 0">这三种崩塌，我的系统用三套完全不同的工程机制来对抗，接下来逐一讲。</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+<div class="box-green">
+<h3 style="color:#1b5e20;margin:3px 0">机制一：用状态机把概率决策关进笼子</h3>
+<p style="margin:2px 0">先解释清楚"关进笼子"这个比喻是什么意思。</p>
+<p style="margin:2px 0">传统的 ReAct 框架——LangChain 里最常见的那种模式——是让大模型在每一步工具调用之后，自己判断接下来该做什么、要不要再调工具、应该调哪个工具。这种设计的问题是：每一次"该做什么"的判断都是概率性的，模型可能判断正确，也可能漂移。Self-Healing Router 这篇论文（2026 年 3 月发表）把这个问题量化了——他们测了 ReAct 在 19 个场景下的 LLM 调用次数，平均要 123 次，而且每次工具失败之后 ReAct 都要重新调用 LLM 来决策下一步，这意味着控制流完全依赖 LLM 的概率判断，稳定性极低。他们的解法是把控制流从 LLM 推理改成图路由——工具失败时把对应的边权重设成无穷大，然后用 Dijkstra 算法重新计算最短路径，不需要调用 LLM。结果 LLM 调用从 123 次降到了 9 次。</p>
+<p style="margin:2px 0">这个思路给了我很大启发。我的状态机设计的核心思想跟这篇论文是一致的：<b>把能够确定性化的控制流决策，从 LLM 推理里剥离出来，变成代码逻辑。</b></p>
+<p style="margin:2px 0">具体实现上，整个系统是一个 LangGraph 构建的有向状态图，节点包括 Supervisor、Coder、Reviewer、ErrorHandler、ProfileUpdater。关键在于节点之间的路由逻辑是怎么写的——Supervisor 节点的输出会触发 P1 断言检查，检查逻辑在 multi_agent.py 的 729 到 795 行。P1 断言只做一件事：检查 Coder 返回的消息里是否包含 <code>[DATA]:</code> 前缀的有效数据标记。这个检查是纯代码判断，不经过 LLM，是二进制的：有 <code>[DATA]:</code> 且不为空，步骤队列 <code>pop(0)</code> 推进下一步；没有，要么触发 retry_count 机制，要么转 ErrorHandler。整个推进逻辑不依赖 LLM 的"判断"，是完全确定性的状态转移。</p>
+<p style="margin:2px 0"><code>[DATA]:</code> 标记本身也不是靠提示词要求 LLM 自觉加的——在工具执行的后处理函数里，代码特征匹配到执行结果后会自动添加这个标记，是代码层的强制行为。这个细节很重要：如果依赖 LLM 主动加标记，它偶尔会忘，就给了目标漂移留了后门。</p>
+<p style="margin:2px 0">另一个关键机制是职责隔离。Supervisor 是规划节点，它持有步骤队列 <code>remaining_steps</code>，决定做什么；Coder 是执行节点，它写代码调接口，没有任何权限修改队列；Reviewer 是审核节点，只做输出质量评估。这三个职责在代码层强制隔离，任何节点都不能越权。这直接堵死了模型在执行阶段偷偷修改计划的可能性，也防止了规划阶段提前执行导致的状态污染。</p>
+<p style="margin:2px 0">全局步数计数器是最后一道保险，超过 25 步强制终止整个链路。这不是"提示词里告诉模型你最多做 25 步"，是代码里的硬限制，直接 raise 一个异常。</p>
+<p style="margin:2px 0">结果如何？在 35 个真实压测任务里，Medium 难度任务的 E2E Pass@1 达到 87.5%，Hard 难度任务里的目标漂移事件降到了可控范围。</p>
+</div>
+<div class="box-green">
+<h3 style="color:#1b5e20;margin:3px 0">机制二：把 RAG 的粒度对准问题的粒度</h3>
+<p style="margin:2px 0">这是整个项目里我认为最值得深聊的一个机制，因为它涉及一个在很多人做 RAG 的时候会忽略的基础性问题：<b>检索单元的粒度，要和问题的粒度完全匹配，否则召回是假召回。</b></p>
+<p style="margin:2px 0">让我从问题出发来解释。用户说"查一下茅台的股息率"，系统需要知道：在 Tushare API 里，股息率对应的字段叫 <code>dv_ttm</code>，所属接口是 <code>daily_basic</code>，参数格式是 <code>ts_code</code> 加交易日期。这是一个极度精确的、符号级别的对齐需求——不是"语义上差不多"，是字节层面的精确匹配。</p>
+<p style="margin:2px 0">传统做法是把每篇 Tushare 接口文档作为一个检索单元——340 篇文档就是 340 个 chunk，每个 chunk 几百到几千个字。问题在于，当你用"股息率"这个词去检索，最相关的那篇文档被正确地召回了，但这篇文档里列了几十个字段，模型需要在几十个字段里自己找到 <code>dv_ttm</code>。这个"从文档里找字段"的步骤，模型完成得并不可靠——它会以为看到了 <code>dv_ratio</code>（另一个看起来相关的字段）就觉得自己找到了答案。这就是字段幻觉的技术根源：检索粒度在文档级，但问题的答案在字段级，粒度错配。</p>
+<p style="margin:2px 0">我的做法是把 340 篇接口文档解析成字段级的最小检索单元。具体来说，每一行参数表格拆成一个独立的 chunk，格式是接口名加字段名加字段类型加字段描述——比如"利润表接口 字段: n_income (float) - 净利润"。这样 340 篇文档变成了 4032 个字段级 chunk，存到 FAISS 索引里。当用户问"净利润字段是什么"，检索直接返回"利润表接口 字段: n_income (float) - 净利润"，这个 chunk 本身就是答案，Coder 节点读到这个 chunk，写代码的时候直接知道该用 <code>n_income</code>，不需要再从一篇长文档里猜。</p>
+<p style="margin:2px 0">FGR-ColBERT 这篇论文（2026 年 4 月）从一个不同的角度验证了同样的道理。他们研究的是 ColBERT 的 late interaction——ColBERT 的核心思想是保留 token 级别的表示向量，让 query 和 document 在 token 粒度上做交互，而不是把整个文档压成一个向量。FGR-ColBERT 更进一步，把大模型蒸馏出的细粒度相关性信号直接集成到检索函数里。他们发现 110M 参数的小模型通过这个机制，在检索质量上能超越 27B 参数的大模型。这个结论背后的逻辑我认为完全适用于我的场景：<b>检索的精度不取决于模型参数量，取决于检索单元的粒度是否和问题的信息需求精确对齐。</b>我做的字段级 chunking 是这个思想的一个工程化实现，不是 token 级，而是字段级，但解决的是同样的粒度错配问题。</p>
+<p style="margin:2px 0">粒度问题解决之后，还有第二个子问题：查询侧的语义鸿沟。用户说"股息率"，索引里存的是 <code>dv_ttm</code> 这个英文缩写，如果直接拿"股息率"去做关键词检索，BM25 什么都匹配不到。解法是在查询端做同义词扩展：系统维护了一张 <code>FINANCIAL_SYNONYMS</code> 字典（lib.py 的 933 到 972 行），把中文金融术语映射到对应的 API 字段名，"股息率"扩展为包含 <code>dv_ttm</code>、<code>dv_ratio</code> 的复合查询串。这样向量检索负责语义相似性的召回，BM25 关键词检索负责精确字段名的命中，两路结果按 0.7:0.3 的权重加权融合——这个权重是离线用真实查询评估调出来的，金融语义泛化需求更高所以向量权重更大。</p>
+<p style="margin:2px 0">最终结果：RAG Hit@3 从改造前的大约 62% 提升到了 93.1%，代码字段解析失败率从 5% 降到了 1%。这个数字背后的意义是：Coder 节点不再需要猜字段名，每次生成代码的时候，检索结果直接给了它正确答案。</p>
+<p style="margin:2px 0">DRAG 这篇论文（ACL 2025）研究了一个叫"幻觉叠加幻觉"的现象——当 RAG 检索结果本身就含有噪声，生成模型不仅会产生幻觉，还会把检索来的噪声和自己的幻觉叠加，产生更严重的错误。他们的解法是在检索阶段引入多 Agent 辩论，支持方和反对方对同一个检索结果做正反论证，用对抗性辩论来过滤噪声。我的多路召回融合是一个类似思想的简化实现：规则抽取、LLM 意图识别、RAG 三路分别做检索，取交集或做加权融合。单路召回有噪声，三路交叉验证能大幅降低噪声。不是学术上的对抗辩论，是工程上的多源验证。</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+<div class="box">
+<h3 style="color:#4a148c;margin:3px 0">机制三：让错误分类，而不是让错误重试</h3>
+<p style="margin:2px 0">这是第三个核心机制，也是和大多数 Agent 系统区别最明显的地方。</p>
+<p style="margin:2px 0">先说为什么无脑重试是最差的策略。Tushare API 会产生四类本质不同的错误：字段名写错触发 KeyError、网络超时、Token 权限不够、数据真空（接口正常返回但数据不存在）。这四类错误的正确处理方式是完全不同的。字段名写错，重试有意义，因为下次可以用正确的字段名；网络超时，指数退避重试有意义；Token 权限不够，重试没有任何意义，是配置问题；数据真空，最关键，比如查一家已经停牌的公司的交易数据，接口永远返回空 DataFrame，无限重试只会把系统拖死。</p>
+<p style="margin:2px 0">如果不做错误分类，直接无脑重试，遇到数据真空场景就是死循环，直到超时。我在设计 ErrorHandler 节点的时候，花了相当多时间在错误分类上。</p>
+<p style="margin:2px 0">分类逻辑在 error_classifier.py 里，核心是一个 <code>ERROR_PATTERNS</code> 字典（108 到 139 行），对每一种错误类型定义了识别规则和对应的处理策略。识别是多维度的：异常类型（KeyError、TimeoutError、PermissionError 等）、报错消息里的关键词（比如"KeyError"加引号包着的字段名说明是字段幻觉）、API 返回的状态码。分类完了之后走完全不同的处理路径。</p>
+<p style="margin:2px 0">字段幻觉的处理路径是这样的（代码在 error_handlers.py 的 682 到 720 行）：先用正则从报错堆栈里提取出错误字段名，比如从 <code>KeyError: 'net_profit'</code> 里提取出 <code>net_profit</code>；然后压缩错误上下文，只取关键的 8 行；接着用提取出的字段名和相关 API 名组合成新的 RAG 查询，在字段级索引里检索正确字段名；最后把"字段名 <code>net_profit</code> 不存在，正确字段名是 <code>n_income</code>"这条信息打包成结构化反馈注入 Coder 的下一次生成。整个流程不调用 LLM 做判断，是纯规则加 RAG 查询。PALADIN 那篇论文（2025 年 9 月）做的是类似的事情，但规模大得多——他们在五万条失败轨迹上微调模型，训练了一个能够检索相似失败案例并生成恢复策略的 Agent，把恢复率从 32.76% 提升到了 89.68%。他们的系统泛化能力更强，能处理训练中没见过的失败模式；我的系统是有限集合上的规则覆盖，牺牲了泛化，换取了确定性和速度——字段别名表是 O(1) 查表，不需要 LLM 推理。在金融 API 场景里，失败模式是有限集合，这个取舍是合理的。</p>
+<p style="margin:2px 0">数据真空的处理路径是另一条完全不同的路：系统识别到空 DataFrame 但没有任何异常抛出的组合信号，立即把这个状态标记为"不可重试"，在最终报告里注明"查询时间段内数据不存在"，跳出循环，不触发 retry_count。这条路的代码判断是：接口调用成功（没有异常），但 DataFrame 为空，且没有"无权限"类的错误消息——三个条件同时成立才判定为数据真空，精确度很重要，避免把网络超时误判成数据真空。</p>
+<p style="margin:2px 0">还有一类特殊情况是我额外处理的：大数据查询触发 60 秒熔断。系统里的代码执行内核是一个有状态的 Python 内核，执行超过 60 秒的代码会被强制终止。60 秒这个参数是从压测数据里定的——Hard 难度任务的 P95 完成时间是 62 秒，Medium 难度的平均是 23 秒，30 秒会误杀大量正常任务，90 秒用户等待体验太差，60 秒是那个平衡点。熔断触发之后，系统不是直接返回错误，而是检查 <code>stdout_capture</code> 里有没有部分输出——如果已经有超过 100 字节的部分数据（说明任务执行到了一定进度），就返回 <code>[PARTIAL RESULT]</code> 标记加已获取的部分结果，Supervisor 识别到这个标记之后不继续执行剩余步骤，直接路由到 Reviewer 生成降级回复，告诉用户任务执行了多少进度、推荐缩小查询范围。这不是简单的超时失败，是带信息量的降级。</p>
+</div>
+<div class="box">
+<h3 style="color:#4a148c;margin:3px 0">机制四：有状态执行内核解耦指令流和数据流</h3>
+<p style="margin:2px 0">这个机制解决的问题更隐蔽，很多人做多步 Agent 的时候不会意识到它，但它是系统能不能 scale 到真实复杂任务的关键。</p>
+<p style="margin:2px 0">多步任务里，每一步都会产出中间数据。比如查利润表拿到了茅台的净利润，这个数据在下一步计算 ROE 的时候需要用到。最简单的处理方式是把这个数据文本化，塞进对话历史里，下一步的 Coder 从历史消息里读。问题是每往下走一步，对话历史就多一段数据，到第五步第六步的时候，历史里已经有几千个 token 的财务数据，LLM 的上下文被大量原始数据填满，推理质量直线下降，这就是"上下文膨胀"。</p>
+<p style="margin:2px 0">系统的解法是把数据流和指令流物理分离。中间数据不进对话历史，而是持久化在 StatefulPythonKernel 的 <code>globals</code> 字典里——这是一个跨步骤共享的 Python 命名空间，变量在内核里是持久的。第二步生成的 <code>df_income</code>（利润表数据帧）存在 globals 里，第三步的代码直接用变量名 <code>df_income</code> 来引用它，不需要把数据文本化后传给 LLM。对话历史里只有推理指令——"用 df_income 计算 ROE，公式是净利润除以净资产"——而不是实际的数据内容。上下文长度因此不随步骤数量线性增长，10 步任务和 3 步任务消耗的 token 差不多。</p>
+<p style="margin:2px 0">这个设计的副产品是一个重要的安全机制：AST 静态分析。在执行代码之前，系统对代码做静态分析，检查是否包含 <code>os.system</code>、<code>subprocess</code>、<code>__import__</code> 等高危调用。这不依赖沙箱，是在代码字符串级别做的规则拦截，误杀率低，性能开销可以忽略。</p>
+<p style="margin:2px 0">KernelManager 在多用户并发场景里负责隔离：每个会话有独立的内核实例和独立的 Lock。用户间并行，用户内串行——同一个用户的两次查询会抢同一个 Lock，确保步骤执行的顺序性；不同用户的查询互不干扰，globals 完全隔离。</p>
+</div>
+</div>
+
+<div class="box-yellow" style="margin-top:6px">
+<h3 style="color:#e65100;margin:3px 0">整体架构一句话总结 + 四个常见追问深度回答</h3>
+<p style="margin:2px 0"><b>用 10 秒钟说清楚这个系统的本质：</b>我用三层确定性约束对抗概率模型的天然不稳定性。第一层，状态机架构隔离概率决策，把控制流变成确定性路由；第二层，字段级 RAG 对齐检索精度和代码生成的信息需求，消灭字段幻觉；第三层，错误分类加有状态执行内核，让每种失败都有精确的恢复路径。系统不是最复杂的，也不是 SOTA，但在金融 API 调用这个具体场景里，它把可预期的失败模式逐一覆盖了。35 个真实压测任务全部完成、87 次 Tushare API 调用 100% 成功、10 个真实故障场景里 9 个零人工干预自愈——这些数字背后是对金融场景特有失控模式的逐一工程化应对，不是靠更强的模型，是靠更克制的架构设计。</p>
+<p style="margin:2px 0"><b>追问一：你的 RAG 跟普通 RAG 有什么本质区别？</b>普通 RAG 是文本对文本的检索，问题和文档在同一个语义空间里，向量相似度能直接衡量相关性。我的场景是自然语言对 API Schema 的检索，这是跨模态符号对齐问题——用户的自然语言意图，需要映射到严格的编程接口符号。这两件事的性质完全不同。举一个具体例子：用户说"查股票分红情况"，你用普通文档级 RAG，检索到的是一篇叫"分红相关接口介绍"的文档，里面列了十几个字段。模型从这篇文档里读完之后，写出了 <code>pro.dividend(ts_code='600519.SH', dv_ratio=dv_ratio)</code>——语法上看起来合理，但 <code>dividend</code> 接口里其实没有 <code>dv_ratio</code> 这个参数，正确的字段叫 <code>per_share</code>，代码运行直接 KeyError。用字段级 RAG，检索直接命中"股利分红接口 字段: per_share (float) - 每股股利（税前）"，Coder 读到这个 chunk，直接知道应该写 <code>df['per_share']</code>，这一步出错的概率接近零。这就是本质区别：普通 RAG 给 LLM 提供参考材料，LLM 自己判断，判断过程有概率出错；字段级 RAG 直接给 LLM 提供答案，LLM 不需要判断，出错的空间被消除。</p>
+<p style="margin:2px 0"><b>追问二：你的自愈和 PALADIN 比，差在哪里？</b>我自己分析是泛化能力上的差距。PALADIN 的系统能处理训练时没见过的失败模式，因为它有一个专门训练过的恢复模型，在五万条失败轨迹上学过怎么从各种失败状态中恢复。我的系统是规则覆盖，如果出现一种我的 <code>ERROR_PATTERNS</code> 字典里没有预定义的新型错误，系统只能走通用重试逻辑，不能做针对性修复。但我对这个权衡是接受的，原因有两个。第一，金融 API 调用场景的失败模式是相对有限的集合：字段名错误、网络超时、权限问题、数据真空，这几类覆盖了 95% 以上的真实错误。用规则把这些高频场景全部覆盖，比训练一个泛化的恢复模型性价比更高。第二，规则的确定性是一个优势而不是劣势——PALADIN 的 LLM 恢复策略也可能判断错，我的规则在预定义的场景里是 100% 正确的。PALADIN 的论文说恢复率是 89.68%，我在覆盖到的场景里恢复率是 100%——代价是我只覆盖了有限的场景。</p>
+<p style="margin:2px 0"><b>追问三：你讲的"概率崩塌"，有没有更准确的数据支撑？</b>我从真实压测数据里拿数字来说。35 个任务里，Hard 难度任务（6 步以上）的首次尝试成功率，在加入所有自愈机制之前，我做过对比测试，大约是 42%——跟 $0.95^6$（77%）比差距更大，因为真实场景里单步成功率不到 95%，Tushare 字段幻觉的出错概率在 Hard 任务里接近 88%，说明单步在字段层面的成功率只有 12%，只有在语义层面是高的。加入字段级 RAG 之后，字段幻觉率从 88% 降到了不到 10%；加入状态机门控之后，目标漂移问题消失；加入错误分类自愈之后，整体 E2E Pass@1 在 Hard 任务上达到了 85% 以上。这个数字的提升路径是清晰的：不是靠单步成功率的提升，是靠系统架构对失败的系统性覆盖。</p>
+<p style="margin:2px 0"><b>追问四：为什么要用 LangGraph，用普通循环不行吗？</b>用普通循环完全可以实现状态转移的逻辑，但 LangGraph 给了两个工程上有价值的东西。第一是节点间状态的类型安全：AgentState 是一个 TypedDict，节点的输入输出类型在代码层强制，不会出现某个节点返回了一个多出一个字段的字典导致下游崩溃。第二是路由逻辑的可读性：LangGraph 里每条路由边都是显式声明的，整个执行流程是一个可视化的图，节点之间的依赖关系一目了然，调试和追踪容易。用普通循环，状态转移逻辑散落在 if/else 里，复杂度一上来就很难维护。但我要补充一点：LangGraph 也带来了一个额外成本，就是调试时的状态追踪比较复杂，尤其是并发多用户场景里，每个 thread_id 对应一个独立的状态图实例，出了问题要定位到具体是哪个节点的哪次执行，需要完善的日志体系。这个成本是真实存在的，不是可以忽略的。</p>
+<p style="margin:2px 0"><b>关于这个系统在更大图景里的位置：</b>我自己对这个项目的定位是很清醒的：它不是一个追求 SOTA 的研究系统，它是一个在特定领域、用有限工程手段、把 Agent 的可靠性提升到可以实际落地的程度的工程系统。2025 年到 2026 年，Agent 领域真正值得关注的趋势不是某个新的 Benchmark 刷榜，而是整个社区开始认真对待"Agent 能不能在真实生产环境里稳定运行"这个问题。PALADIN 研究失败恢复，Self-Healing Router 研究控制流确定性，Problem Drift 研究目标保持，DRAG 研究检索噪声，FGR-ColBERT 研究检索粒度——这些工作从不同角度在构建同一件事：让 Agent 从实验室走向工业系统。我做的这个系统，正好落在这个趋势里一个比较扎实的位置上：不够聪明，但够稳定；不够通用，但在金融场景里够可靠；不是最先进，但是可解释、可追踪、可复现。这是我认为现阶段工业级 Agent 应该有的样子。</p>
+<p style="margin:2px 0;color:#555;font-style:italic">代码溯源：状态机控制逻辑 multi_agent.py 427–900行(Supervisor)·729–795行(P1断言) | 字段级Chunking lib.py 1133–1167行 | FINANCIAL_SYNONYMS lib.py 933–972行 | HybridRetriever lib.py 1186–1255行 | 错误分类 error_classifier.py 108–139行 | 别名表纠错 error_handlers.py 682–720行 | StatefulPythonKernel lib.py 391–470行 | KernelManager lib.py 560–645行</p>
+</div>
+
+</div>
+</div>
+
+<!-- PAGE 24 -->
+<div class="page" id="p24">
+<h1>㉔ SFT×GRPO 策略空间交互——三论文深度分析</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-blue">
+<h3 style="color:#1a237e;margin:3px 0">核心问题的两层拆解</h3>
+<p style="margin:2px 0">这个问题其实包含两个独立但相关的问题，需要分开回答：</p>
+<p style="margin:2px 0"><b>问题A：</b>算法合成的SFT数据会不会让推理链"太模板化"，限制GRPO的探索空间？</p>
+<p style="margin:2px 0"><b>问题B：</b>如果GRPO想发现更高效的推理方式，SFT的先验知识会不会挡住它？</p>
+<hr style="margin:5px 0">
+<h3 style="color:#1a237e;margin:3px 0">论文一：DeReason（arXiv:2603.11193，苏黎世大学，2025）——直接承认"SFT pre-narrows the policy space"</h3>
+<p style="margin:2px 0">这篇论文是最直接回答这个问题的工作。它的核心发现是：<i>"SFT pre-narrows the policy space, RL from..."</i>（SFT会预先收窄策略空间）。</p>
+<p style="margin:2px 0">但它同时发现了一个更微妙的结论：<b>SFT对小模型而言是不可替代的</b>。他们在受控实验里比较了纯SFT、纯RL和SFT-then-RL在相同数据量下的效果，结论是：在小模型（3-4B量级）上，SFT随着数据量增加始终优于纯RL，即使RL在大模型上有更好的探索多样性。</p>
+<p style="margin:2px 0">对这个数独项目意味着什么？SFT合成的"逐行扫描→候选数排除→填写唯一格"的推理模板，确实给GRPO的初始策略装了一个格局较小的先验。但对3B模型来说，<b>没有这个先验，GRPO根本找不到有效推理的起点</b>，探索空间的噪声远远大于信号。</p>
+<p style="margin:2px 0">DeReason的解法是<b>难度解耦</b>：用简单题做SFT（让模型学格式和基础推理模板），用难题做RL（让RL在SFT没覆盖的困难情形里自由探索）。这对数独项目有直接参考价值——如果SFT只用70个线索以上的最简单题型，RL只用60个线索以下的难题，SFT的模板就不会覆盖到RL需要探索的那部分策略空间。</p>
+</div>
+<div class="box">
+<h3 style="color:#1a237e;margin:3px 0">论文二：DAPO（arXiv:2503.14476，ByteDance Seed，2025）——SFT冷启动对entropy的双刃剑效应</h3>
+<p style="margin:2px 0">DAPO完全绕过了SFT冷启动，直接从Qwen2.5-32B的base model开始做RL，最终在AIME 2024上达到50分，超过DeepSeek-R1-Zero。关键设计是<b>Clip-Higher</b>——把PPO裁剪范围从对称的<code>[1-ε, 1+ε]</code>改成不对称的<code>[1-ε_low, 1+ε_high]</code>，其中 $\epsilon_{high}$ 设得明显更高（如0.3），允许概率极低的token的概率大幅上升，从而鼓励模型探索SFT先验里概率很低的推理路径。</p>
+<p style="margin:2px 0">DAPO对SFT冷启动的隐性批评是：SFT冷启动之后，策略对某些token的概率分布已经被拉偏，标准PPO裁剪的上界 <code>1+ε</code> 实际上限制了GRPO把"原本概率极低的新策略"的概率显著提高的能力。原因是：一个在SFT里从来没出现过的推理路径，在初始策略里的概率接近零，而 <code>π_new/π_old</code> 要从0变成可观的值，需要超出 <code>1+ε</code> 的比值，这被直接裁掉了。</p>
+<p style="margin:2px 0">这直接回答了问题B：<b>如果GRPO想输出SFT里没有的更高效推理方式（比如用宫格优先策略、naked pair消除法），标准PPO-clip会在数学层面上阻止这些策略的概率显著提升</b>，因为这些策略在SFT初始化的策略里概率接近零，IS比值会超出裁剪上界。DAPO的Clip-Higher是解法：把 $\epsilon_{high}$ 从0.2提到0.3或更高，允许这类"超低概率新策略"获得足够梯度。</p>
+<hr style="margin:5px 0">
+<h3 style="color:#1a237e;margin:3px 0">论文三：ProRL（arXiv:2505.24864，NVIDIA，NeurIPS 2025）——RL能不能超越SFT的边界？</h3>
+<p style="margin:2px 0">ProRL的出发点是一个悬而未决的核心问题：<i>"Does reinforcement learning truly unlock new reasoning capabilities from a base model, or does it merely optimize the sampling efficiency of solutions already embedded in the base model?"</i></p>
+<p style="margin:2px 0">他们用"Creativity Index"（创造力指数）来量化模型是否发现了训练数据里不存在的新解法，结果是：<b>prolonged RL（长时间训练）确实能让模型发现全新的推理策略，而不只是优化已有策略的采样效率</b>。但关键条件是：</p>
+<p style="margin:2px 0">① <b>不能早停</b>：大多数研究只训练几百步，ProRL训练到数千步，新的推理行为才涌现。② <b>必须防止entropy collapse</b>：这是探索的最大敌人，ProRL用KL惩罚+周期性重置reference policy来保持entropy。③ <b>不能在已经被过训练的领域</b>：对于数学这种模型在预训练就大量接触的领域，RL更难突破；对于数独这种相对小众的符号推理，突破空间反而更大。</p>
+<p style="margin:2px 0">对这个数独项目：1000步训练用到就截止了，按ProRL的标准这是"premature termination"。更重要的是，在第600步遇到entropy collapse之后，把策略拉回参考模型附近，这在稳定了训练的同时，也实际上把探索空间收回到了SFT先验的邻域，失去了发现新策略的机会。</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+<div class="box-green">
+<h3 style="color:#1b5e20;margin:3px 0">三篇论文结论对齐回具体代码</h3>
+<p style="margin:2px 0"><code>synthesize_reasoning</code>函数生成的是这样一种固定逻辑序列：遍历行→遍历格→计算该格的行/列/宫排除集→如果只剩一个候选数则填写。这实际上是<b>"唯一候选数法（naked singles）"的完整实现</b>，是数独推理中最简单的策略之一。真正高效的数独解法还包括<b>naked pairs/triples</b>（两格都只有相同两个候选数则可以从其他格排除）、<b>hidden singles</b>（某个数只在一行中的一个格子里有候选空间）、以及<b>回溯搜索</b>（X-wing等）。</p>
+<p style="margin:2px 0">SFT数据完全没有这些策略，因为算法合成器不会生成它们。这就产生了一个非常具体的问题：对于需要用naked pairs才能推进的那类数独题，GRPO理论上有能力发现这个策略，但有两个机制在阻止它。</p>
+<p style="margin:2px 0"><b>第一个阻止机制（DAPO论文指出）：</b>SFT后策略的初始分布里，naked pairs推理对应的token序列概率极低（因为训练数据里没有），标准PPO-clip的上界<code>1+0.2</code>不允许这类序列的概率被大幅提升，梯度被裁掉。</p>
+<p style="margin:2px 0"><b>第二个阻止机制（FlowRL论文指出）：</b>奖励函数是结果导向的，无法区分"用naked singles成功"和"用naked pairs成功"的路径——两者都拿到同样的满分。主导策略（naked singles）会越来越强，次要策略即使有奖励也会被淹没。</p>
+<p style="margin:2px 0"><b>从实际训练观察到的证据：</b>第九节里描述了第700步的模式崩溃现象——所有轨迹都变成"按行从左到右扫描"。这正是SFT模板+entropy collapse联合作用的结果：先验引导到了唯一候选数法，entropy collapse锁死了探索，最终固化成了SFT合成器的工作方式。</p>
+</div>
+<div class="box-yellow">
+<h3 style="color:#e65100;margin:3px 0">这个问题的诚实答案 + 改进方向</h3>
+<p style="margin:2px 0">SFT合成数据确实通过两条路径限制了GRPO的探索：<b>一是直接提高了模板路径的先验概率，二是通过KL惩罚+标准裁剪在数学上屏蔽了全新策略的发现</b>。但这不是一个"应该避免SFT"的结论，而是一个"应该更精心设计SFT"的结论。</p>
+<p style="margin:2px 0">具体到这个项目，最有价值的改进方向是：<b>SFT数据里故意注入多样化的推理策略</b>，比如用naked pairs、hidden singles、宫格优先扫描这三种策略各合成约三分之一的数据，让SFT后的初始策略在多个解题路径上都有非零概率，然后GRPO才有机会在这几个路径之间做真正意义上的强化学习选择——而不是一上来就被一种模板的强先验压死。这也和DeReason的核心主张完全吻合：SFT应该提供足够广的初始策略覆盖，让RL能在"难题需要用到的策略空间"里真正探索。</p>
+<p style="margin:2px 0"><b>面试官问这个问题其实是在考两件事：</b>一是你对自己项目的数据管线有没有真正理解（而不是把代码跑起来就算了），二是你对SFT和GRPO之间的交互关系有没有工程上的认知。把这两层都说清楚，是这道题的满分答案。</p>
+<hr style="margin:5px 0">
+<p style="margin:2px 0;color:#666;font-size:0.95em"><b>三篇论文索引：</b><br>
+DeReason (arXiv:2603.11193, 苏黎世大学, 2025) — SFT pre-narrows policy space; difficulty decoupling<br>
+DAPO (arXiv:2503.14476, ByteDance Seed, 2025) — Clip-Higher; $\epsilon_{high}$=0.3; asymmetric clipping unblocks low-prob strategies<br>
+ProRL (arXiv:2505.24864, NVIDIA, NeurIPS 2025) — Creativity Index; prolonged RL; entropy preservation via KL+ref reset</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- PAGE 25 -->
+<div class="page" id="p25">
+<h1>㉕ SFT数据合成设计缺陷·面试口述版·推理策略优先级</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-blue">
+<h3 style="color:#1a237e;margin:3px 0">synthesize_reasoning 的根本性缺陷</h3>
+<p style="margin:2px 0">这个问题触到了这个项目里一个我自己后来才意识到的设计缺陷。我先坦诚地说清楚问题是什么，再说正确的做法应该是什么，以及为什么这对GRPO阶段有实质影响。</p>
+<p style="margin:2px 0">我的<code>synthesize_reasoning</code>函数，本质上是一个<b>答案已知条件下的事后解释器</b>，而不是一个真正在推理的系统。它的工作方式是：先从答案字符串里取出每个空格的正确数字，然后生成"检查第R行第C列，发现该位置应填V，填入V"这种文字。这里有一个根本性的问题——它从来没有真正计算过候选数，它知道答案是什么，然后假装它是通过逻辑"推导"出来的。</p>
+<p style="margin:2px 0">这带来的直接后果是，SFT训练出来的模型学到的不是"从约束推导答案"这个过程，而是"看到空格就直接写一个听起来合理的理由"这个行为。CRV论文把这个叫做spurious reasoning，也就是虚假推理——推理过程在文本层面看起来正确，但和答案之间没有真正的因果关联。这是整个CoT设计里最大的一个盲点。</p>
+<p style="margin:2px 0">正确的实现逻辑应该是这样的：先独立地、不看答案地为每个空格计算真实候选集，然后按照约束强度的顺序应用解题策略，每一步出数都基于真正的候选数消除过程，而不是答案反查。策略的优先顺序应该是以下这套完整体系。</p>
+</div>
+<div class="box">
+<h3 style="color:#1a237e;margin:3px 0">推理策略优先级体系</h3>
+<p style="margin:2px 0"><b>第一优先级是Naked Single</b>——某个格子的候选集只剩一个数字，直接填，这是最简单、最快的情形，只需要看这一个格子的行列宫约束。很多人会把Hidden Single排在前面说"最快出数"，但其实Naked Single检查代价更低，因为只需要扫描单个格子，而不是扫描整行整列里所有格子来找某个数字的唯一落点。</p>
+<p style="margin:2px 0"><b>第二优先级是Hidden Single</b>——某个数字在某一行、列或宫里只有一个格子能放它，即使那个格子本身有多个候选数，这个数字也只能在这里。这需要对每个单元格集合做扫描，代价比Naked Single高，但对于中等难度的数独仍然是主力策略。</p>
+<p style="margin:2px 0"><b>第三是Naked Pair</b>——两个格子恰好只有相同的两个候选数，那这两个数就被锁定在这两个格子里，可以从同行同列同宫的其他格子里消掉这两个候选数。这一步本身不直接填格，而是为后续的Naked Single创造条件。</p>
+<p style="margin:2px 0"><b>至于X-Wing和Swordfish，对这个数据范围根本不需要</b>。训练数据全部是70个以上线索的题目，最多只有11个空格。在这个约束密度下，Naked Single已经能覆盖大约95%的空格，Hidden Single处理剩余大部分，Naked Pair极少出现，X-Wing需要4个空格形成特定图案结构，在这种高线索密度的情形里几乎从不出现。如果在合成推理链里加入X-Wing扫描步骤，那99%的时候都是"扫描了X-Wing，没找到"，这些文字只会增加CoT的噪声，破坏PR-CoT论文里说的信噪比。</p>
+<p style="margin:2px 0"><b>最后才是回溯</b>，也就是当所有确定性策略都用尽还有空格时，用假设法填入一个候选数试探，如果触发矛盾则回退。对于70+线索的题目，这条路基本不会被触发，但它作为兜底策略的存在保证了解题器的完备性。</p>
+</div>
+</div>
+
+<div class="box-yellow" style="margin-top:6px">
+<h3 style="color:#e65100;margin:3px 0">这个缺陷对GRPO阶段的实质影响 + 正确的修复思路</h3>
+<p style="margin:2px 0">说到这里，面试官可能会问：这对GRPO阶段有什么影响？这正是这个改进方案真正的价值所在。</p>
+<p style="margin:2px 0">如果SFT数据里所有推理链都是同一种逐行扫描、顺序处理的模板，GRPO阶段的初始策略就只对这一种路径有非零概率。DAPO论文明确指出，标准PPO裁剪的上界<code>1+ε</code>在数学上屏蔽了初始概率接近零的策略——如果模型在SFT后从来没有生成过"先找宫格里的Hidden Single"这种推理，这个路径的概率是接近零的，标准裁剪会截掉让它概率显著上升的梯度。换句话说，SFT不只是提供了一个出发点，它的单一性实际上把RL能探索的策略空间限制住了。</p>
+<p style="margin:2px 0">正确的做法是在SFT数据里故意注入策略多样性：<b>一部分样本用Naked Single主导、一部分用Hidden Single主导、一部分先做Naked Pair消除再出数</b>，让初始策略在多种路径上都有合理的非零概率。这样GRPO才有机会通过奖励信号去真正比较和选择这些策略，而不是从一开始就被单一模板的强先验给锁死。</p>
+<p style="margin:2px 0">这是这个项目里如果重来会最优先修改的地方之一，而且改动成本不高——核心是重写<code>synthesize_reasoning</code>，让它不看答案、真正跑候选数计算，然后随机选用不同的策略顺序来生成多样化的训练样本。</p>
+<hr style="margin:4px 0">
+<p style="margin:2px 0"><b>这道题的面试答题结构（三层递进）：</b></p>
+<p style="margin:2px 0">① <b>承认缺陷</b>：<code>synthesize_reasoning</code>是事后解释器，不是真实推理器，生成了spurious reasoning（CRV论文定义）</p>
+<p style="margin:2px 0">② <b>说清后果</b>：SFT单一模板→GRPO初始策略单一→标准clip数学屏蔽新策略（DAPO）→entropy collapse锁死→模式崩溃（FlowRL）</p>
+<p style="margin:2px 0">③ <b>给出修复</b>：重写合成器（真实候选数计算，按Naked Single→Hidden Single→Naked Pair优先级出数）+ 策略多样性注入（各策略各占约1/3数据）+ 可选DAPO Clip-Higher解锁低概率路径</p>
+</div>
+
+</div>
+</div>
+
+<!-- PAGE 26 -->
+<div class="page" id="p26">
+<h1>㉖ 工程踩坑纠错版——四个坑的代码核实与正确表述</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-blue">
+<h3 style="color:#1a237e;margin:3px 0">坑一：LoRA加载方式——机制描述需纠正</h3>
+<p style="margin:2px 0"><b>代码实际行为（grpo_trainer.py）：</b></p>
+<p style="margin:2px 0">第 312-317 行：同时传 <code>PeftModel</code> 实例 + <code>peft_config</code> → 直接抛 <code>ValueError</code>，不是 NaN，是立即报错退出。第 319-327 行：传已包装的 PeftModel 但不带 peft_config → TRL 自动复制一份 <code>"ref"</code> adapter，<b>这条路可以正常工作</b>，不会导致 NaN。</p>
+<p style="margin:2px 0"><b>最终正确版本（改动双卡_最终版.py 第 628 行）：</b>传模型路径字符串 + 单独传 <code>peft_config</code>，让 TRL 内部调 <code>get_peft_model</code>，通过 disable/enable adapter 来区分训练模型和参考模型，共用同一套基础权重。</p>
+<p style="margin:2px 0"><b>真正的坑：</b>SFT 那边调了 <code>model.merge_and_unload()</code> 把 LoRA 合并进基础模型保存到 <code>output/sft_model</code>。加载这个合并后的模型时 <code>is_peft_model()</code> 返回 False，GRPOTrainer 进入第 565-570 行分支，尝试从原始 checkpoint 路径单独加载一份 ref_model，24GB 显存装两个模型直接 OOM，或者找不到路径直接失败。</p>
+<p style="margin:2px 0"><b>正确表述：</b>这里有一个 TRL 框架里不太直觉的设计。SFT 阶段用了标准的 <code>get_peft_model</code> + <code>merge_and_unload</code> 把 LoRA 合并进基础模型保存，这在 SFTTrainer 里是正确做法。但 GRPOTrainer 对 PEFT 有独立的初始化逻辑，它依赖 <code>is_peft_model()</code> 的返回值来判断怎么处理参考模型——如果传进去的是已合并的模型，这个判断是 False，GRPOTrainer 就会尝试单独加载一份 ref_model，在 24GB 显存的单卡上直接 OOM。正确的做法是传模型路径字符串加上 peft_config，让 TRL 内部管理 LoRA 的初始化，用 adapter 的 disable/enable 来切换训练模型和参考模型，共用同一套基础权重。代码在 <code>grpo_trainer.py</code> 第 319-327 行和第 560-563 行都能直接看到这个分支逻辑。</p>
+</div>
+<div class="box">
+<h3 style="color:#1a237e;margin:3px 0">坑二：target_modules——理由正确，但历史版本无代码证据</h3>
+<p style="margin:2px 0"><b>代码实际情况：</b>所有可查版本——<code>sudoku_sft_bf16_lora_final.py</code> 第 158 行，<code>单卡sft.py</code> 第 83 行，<code>grpo_config.yaml</code> 第 10 行——用的都是同一套 7 个模块：<code>q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj</code>。代码库里<b>找不到任何 qkv-only 的历史版本</b>。"奖励震荡标准差是均值的3倍""每5步跳动超过20%"这些数字也没有日志文件对应。</p>
+<p style="margin:2px 0"><b>FFN为什么要训练这个道理本身是对的：</b>Transformer FFN 层（gate_proj, up_proj, down_proj）对应 MLP 中的特征变换，o_proj 是注意力输出的线性变换，这些层确实参与了规则推理和候选数计算的表示学习，不训练这些层会让梯度全压在 qkv 上。解释逻辑合理，但不能说"我先试了 qkv-only 然后发现震荡"，因为代码里没有这个历史。</p>
+<p style="margin:2px 0"><b>正确表述：</b>LoRA 的目标层选择，配置是 7 个模块：q/k/v/o_proj 加上 FFN 的 gate/up/down_proj，也就是 all_linear 的完整覆盖。选择这个配置的理由是：数独推理既需要注意力层维护行列宫的约束关系，也需要 FFN 层做候选数集合的计算和排除。如果只训练 qkv，FFN 里的推理逻辑无法更新，梯度全部集中在注意力层，理论上会导致训练不稳定。代价是显存占用更高，但从 SFT 的收敛情况来看，覆盖 FFN 是值得的。</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+<div class="box-green">
+<h3 style="color:#1b5e20;margin:3px 0">坑三：vLLM——禁用有证据，但机制解释需纠正</h3>
+<p style="margin:2px 0"><b>代码证据：</b><code>grpo_config.yaml</code> 第 34 行明确写：<code>use_vllm: false  # 禁用 vLLM 推理服务器</code>。这个注释说明是主动决策，不是默认值。<code>grpo_trainer.py</code> 第 1641-1665 行，vLLM IS 修正机制真实存在——计算 <code>old_per_token_logps - sampling_per_token_logps</code> 差值，乘以 IS ratio 来修正。</p>
+<p style="margin:2px 0"><b>机制解释需纠正：</b>"PagedAttention 会改变 GPU 随机数生成序列"——这个解释是错的。问题不是 RNG，而是 vLLM 使用了与 HuggingFace 不同的 attention kernel 实现（PagedAttention 和 FlashAttention 在<b>数值精度</b>上有微小差异），导致同一个 token 序列在 vLLM 里计算出的 logprob 和在训练时 HF 计算出的 logprob 有系统性偏差。这是数值精度问题，不是随机性问题。"行列宫约束奖励低15%"这个数字没有对应的 SwanLab 日志，不要在面试里说这个。</p>
+<p style="margin:2px 0"><b>sequence_mask 导致 loss→0 的逻辑是成立的：</b>从第 1663-1665 行代码来看，当 IS ratio 超过 cap 时，是直接 <code>masked_fill</code> 为 0.0——整条序列的梯度全归零。数独推理链很长（几百 token），logprob 差值加总后更容易超过 cap，大量回答整条被 mask 掉，loss 就趋向零。这是 cap 选得不好 + sequence_mask 模式太激进的组合问题。</p>
+<p style="margin:2px 0"><b>正确表述：</b>vLLM 最终关掉了，配置文件里有直接记录。关掉的原因是 vLLM 和 HuggingFace 在 attention 实现上用了不同的 kernel——vLLM 是 PagedAttention，HF 是标准 FlashAttention，同样的序列在两边计算出来的 logprob 有系统性的数值差异。GRPO 需要计算重要性采样比值来修正这个偏差，TRL 里有 <code>vllm_importance_sampling_correction</code> 专门处理，代码在 <code>grpo_trainer.py</code> 第 1641 行。但在 <code>sequence_mask</code> 模式下，超过 cap 的 token 直接被置为零梯度，实际训练中分布差异范围比 cap 值大，结果是大量 token 的梯度被屏蔽，loss 异常低，训练没有有效信号。最终选择放弃 vLLM，用原生 HF 生成，慢一些但训练信号是干净的。</p>
+</div>
+<div class="box-yellow">
+<h3 style="color:#e65100;margin:3px 0">坑四：max_completion_length——最扎实，基本原话可用</h3>
+<p style="margin:2px 0"><b>代码验证全部通过：</b></p>
+<p style="margin:2px 0">• <code>sudoku_grpo.py</code> 第 451 行：<code>max_completion_length=4096</code> ✓</p>
+<p style="margin:2px 0">• <code>sudoku_grpo.py</code> 第 378 行：<code>max_seq_length=5120</code> ✓</p>
+<p style="margin:2px 0">• <code>grpo_trainer.py</code> 第 1492-1494 行：<code>clipped_ratio</code> 的计算逻辑是检查 completion 的最后一个 token 是否是 <code>eos_token_id</code> 或 <code>pad_token_id</code>，不是的话就认为被截断 ✓</p>
+<p style="margin:2px 0">• <code>sudoku_grpo.py</code> 第 70 行：<code>LogGenerationCallback</code> 里有 <code>completions/clipped_ratio</code> 的打印监控 ✓</p>
+<p style="margin:2px 0"><b>注意：</b>"5%以下"这个具体数字来自训练日志，没有 log 文件可查，说的时候不要给出精确数字，说"维持在很低水平"更安全。</p>
+<p style="margin:2px 0"><b>正确表述：</b>max_completion_length 设 4096 不是随意的。模型的 max_seq_length 是 5120，一条 prompt 经过 tokenizer 后大约 1000 到 1200 个 token，4096 是在不让 prompt 被截断的前提下给推理链留出的最大空间。如果扩大到 8192，G=12 条件下 KV-cache 会翻倍，直接 OOM。在训练中实时监控 <code>completions/clipped_ratio</code> 这个指标，它的计算方式是检查 completion 末尾是不是 eos token，不是的话就算被截断——代码在 <code>grpo_trainer.py</code> 第 1492 行。训练过程中这个值基本维持在很低的水平，说明 4096 对数独推理是够用的。偶尔出现截断的情况，往往对应模型陷入了重复循环，这时候截断收到的负奖励信号反而是正确的惩罚。</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- PAGE 27 -->
+<div class="page" id="p27">
+<h1>㉗ 三机制大白话解释——IS修正·FFN·ref模型OOM</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div class="box-blue" style="margin-bottom:6px">
+<h3 style="color:#1a237e;margin:3px 0">问题一：vLLM的IS修正——cap是什么，sequence_mask是什么，为什么loss→0</h3>
+<p style="margin:2px 0"><b>先说背景——为什么需要修正：</b>GRPO训练分两步走：第一步，用模型生成12条轨迹（G=12的采样）；第二步，对这12条轨迹算loss、更新参数。正常情况下（不用vLLM），这两步用的是同一套权重、同一套计算逻辑，logprob是一致的，没有任何偏差。用了vLLM之后，<b>第一步（生成）用vLLM算的logprob，第二步（训练）用HuggingFace自己算的logprob</b>。同一条文本，两套代码算出来的数值不一样——不是随机误差，是系统性的数值精度差距，因为vLLM内部用了不同的attention实现（PagedAttention vs FlashAttention）。这就好比你用计算器算了一个数，又用Excel算了同一个数，小数点后五位开始不一样。这个差距对GRPO影响很大，因为GRPO的梯度估计本质上在算"新策略/旧策略"的比值。分子分母如果用两套不同的计算方式，这个比值就歪了，梯度方向就不准了。</p>
+<p style="margin:2px 0"><b>重要性采样修正（IS correction）是怎么修的：</b>它多算了一步：在训练时，拿当前模型重新算一遍刚才那些轨迹的logprob，得到 <code>old_per_token_logps</code>，然后和vLLM当时采样时存下来的logprob（<code>sampling_per_token_logps</code>）做差值：差值 = 当前模型算的logprob − vLLM采样时存的logprob，IS ratio = exp(差值)。这个比值在衡量"两套计算之间的系统偏差有多大"。如果比值接近1，说明偏差很小，不用修正太多；如果比值很大，说明偏差很大，梯度需要被压制。</p>
+<p style="margin:2px 0"><b>cap是什么：</b>cap（<code>vllm_importance_sampling_cap</code>）就是这个IS ratio的上限。你设cap=2，意思是：任何token的IS ratio，最大只允许到2。比值超过2的，要么截断到2（truncate模式），要么直接归零（mask模式）。cap大——对偏差的容忍度高，偏差大的token也继续参与训练，但梯度可能方向不准；cap小——偏差大的token直接被踢出训练，梯度很干净，但参与训练的token数量少，loss变低。</p>
+<p style="margin:2px 0"><b>sequence_mask是什么，为什么导致loss→0：</b>IS修正有四种模式，关键区别是"以什么粒度做处理、超限后怎么处理"：</p>
+
+<table style="font-size:0.9em;margin:3px 0">
+<tr><th>模式</th><th>粒度</th><th>超限后怎么办</th></tr>
+<tr><td>token_truncate</td><td>每个token单独判断</td><td>超过cap就截断到cap</td></tr>
+<tr><td>token_mask</td><td>每个token单独判断</td><td>超过cap就归零（这个token不参与训练）</td></tr>
+<tr><td>sequence_truncate</td><td>整条序列算一个比值</td><td>超过cap就截断</td></tr>
+<tr><td><b>sequence_mask</b></td><td>整条序列算一个比值</td><td><b>超过cap就把整条序列的梯度全归零</b></td></tr>
+</table>
+
+<p style="margin:2px 0"><code>sequence_mask</code>是最激进的：它把一整条回答里所有token的logprob差值加起来，算一个序列级别的IS ratio，只要这个序列的整体偏差超过cap，这整条回答就完全不参与这轮的梯度更新。数独推理的回答很长，一条回答可能有几百个token，logprob的差值在每个token上都是小的，但加起来就很大。<code>sequence_mask</code>用的是序列级别的总差值，加起来更容易超过cap。cap设得稍小一点，大量回答就整条被mask掉，梯度就没了，loss就趋向零。这是一个cap选得不好+mode选得太激进的组合问题。</p>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-green">
+<h3 style="color:#1b5e20;margin:3px 0">问题二：注意力层为什么维护约束，FFN为什么做候选数计算</h3>
+<p style="margin:2px 0"><b>先理解Transformer里这两种层在干什么：</b></p>
+<p style="margin:2px 0"><b>注意力层（q_proj, k_proj, v_proj, o_proj）</b>干的事情本质上是：让每个位置的token去"看"序列里其他位置的token，然后根据这些关系更新自己的表示。它擅长的是<b>跨位置的信息聚合</b>。</p>
+<p style="margin:2px 0"><b>FFN层（gate_proj, up_proj, down_proj）</b>干的事情是：对每个位置的token表示做一个独立的非线性变换，不需要看其他位置。它擅长的是<b>单点的特征变换和模式匹配</b>。</p>
+<p style="margin:2px 0"><b>数独里这两种能力对应什么：</b></p>
+<p style="margin:2px 0">数独解题的核心是约束传播——知道第3行第5列已经有了数字7，那整个第3行、整个第5列、以及那个宫格里其他格子的候选集里都可以删掉7。这个"知道哪里有什么、影响哪里不能有什么"的逻辑，依赖的是<b>跨位置的信息聚合</b>。比如：token描述坐标(3,5)的地方，需要"看"到同行、同列、同宫的所有相关位置，然后更新自己的理解。这正好是注意力层擅长的。</p>
+<p style="margin:2px 0">候选数计算是另一回事：给定一个空格，已经收集了同行同列同宫的数字信息，现在要从这些信息里<b>计算出这个格子的候选集</b>。这个过程是在一个格子的表示上做推理，不需要再去看别的格子——这是一个局部的、特征变换式的计算，正好是FFN擅长的。</p>
+<p style="margin:2px 0"><b>所以为什么全都要训练：</b>只训练qkv：模型只能更新"看哪里"的逻辑，但"看到之后怎么计算候选数"的逻辑还是用原来的FFN权重，而原来的FFN是为通用语言任务训练的，不是专门为数独约束排除优化的。结果是约束信息收集到了，但推理计算出不来。</p>
+</div>
+<div class="box">
+<h3 style="color:#1a237e;margin:3px 0">问题三：GRPOTrainer的ref_model是什么，为什么OOM，adapter又是什么</h3>
+<p style="margin:2px 0"><b>先说ref_model是什么：</b>GRPO里有一个KL散度惩罚：loss = 奖励信号 − β × KL(当前策略 ∥ 参考策略)。这个"参考策略"就是ref_model——它是训练刚开始时模型的初始状态，在整个训练过程中权重固定不动。它的作用是防止模型跑偏太远：如果当前训练中的模型和初始模型差异太大，KL惩罚就会增大，拉着模型不要走太极端。它<b>不是</b>原始的base model，它是SFT训练完之后、准备开始GRPO训练时的那个起始点。</p>
+<p style="margin:2px 0"><b>为什么传合并后的模型会OOM：</b>TRL用 <code>is_peft_model()</code> 来判断传进来的模型是不是带LoRA adapter的模型。判断结果决定了ref_model怎么建：</p>
+<p style="margin:2px 0">• 如果是LoRA模型（<code>is_peft_model()</code> = True）：ref_model不需要单独存一份，只需要"关掉adapter"就能回到初始状态。关掉adapter = adapter的权重不再叠加 = 模型恢复成训练前的样子。<b>一份显存同时服务两个角色</b>。</p>
+<p style="margin:2px 0">• 如果不是LoRA模型（<code>is_peft_model()</code> = False）：TRL不得不完整加载一份独立的ref_model，跟训练模型并排放在显存里。<b>一下子显存翻倍</b>。</p>
+<p style="margin:2px 0">SFT之后调了 <code>merge_and_unload()</code>，LoRA权重合并进了基础模型，保存出来的是一个普通模型，已经没有adapter了。加载这个模型时 <code>is_peft_model()</code> 返回False，TRL走了第二条路，要单独加载ref_model，24GB显存装不下两个模型，OOM。</p>
+<p style="margin:2px 0"><b>传模型路径字符串+peft_config是什么意思：</b>正确姿势：不传一个模型对象进去，传一个字符串路径，比如 <code>"output/sft_model"</code>，同时传一个 <code>peft_config</code>（LoRA配置：rank多少、训练哪些层等等）。TRL收到这两个参数之后，它自己做三件事：① 从路径加载基础模型，加载进来是原始状态；② 把peft_config应用进去，给基础模型套上一个新的LoRA adapter，命名为"default"；③ 复制一份同样权重的adapter，命名为"ref"，这个ref adapter在训练中永远不更新。然后在训练过程中：计算训练loss时，用"default" adapter；计算KL惩罚（需要参考策略的logprob）时，把"default" adapter关掉，换成"ref" adapter，算完logprob再换回来。整个过程只有一份基础模型权重在显存里，两个adapter只是少量的小矩阵（LoRA的参数量只有全量的1-3%），几乎不额外占显存。这就是共用同一套基础权重的意思。</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- PAGE 28 -->
+<div class="page" id="p28">
+<h1>㉘ IS修正机制深挖——truncate vs mask · token vs sequence 粒度分析</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-blue">
+<h3 style="color:#1a237e;margin:3px 0">截断（truncate）和归零（mask）的本质区别</h3>
+<p style="margin:2px 0">这两个乍看很像，但对训练的影响完全不一样。</p>
+<p style="margin:2px 0"><b>截断（truncate）：</b>IS ratio超过cap了，我不让它超过，强行把它压到cap值。比如cap=2，实际算出来IS ratio是5，我就当它是2来用。这条token/序列<b>还是参与训练的</b>，只是梯度被压小了，不让它影响太大。</p>
+<p style="margin:2px 0"><b>归零（mask）：</b>IS ratio超过cap了，我认为这条数据已经不可信了，直接扔掉，把它的梯度设为零。这条token/序列<b>完全不参与这轮训练</b>，就好像它不存在。</p>
+<p style="margin:2px 0">区别在于：<b>truncate是"降低可信度但还用"，mask是"不可信就整个扔掉"。</b></p>
+<hr style="margin:5px 0">
+<h3 style="color:#1a237e;margin:3px 0">四种模式对比</h3>
+<table style="font-size:0.92em;margin:3px 0">
+<tr><th>模式</th><th>粒度</th><th>超限后怎么办</th><th>数据损失</th></tr>
+<tr><td>token_truncate</td><td>每个token单独</td><td>超过cap截断到cap，还参与训练</td><td>最小</td></tr>
+<tr><td>token_mask</td><td>每个token单独</td><td>超过cap的token归零，其余照用</td><td>局部</td></tr>
+<tr><td>sequence_truncate</td><td>整条序列汇总</td><td>序列总偏差超cap就截断</td><td>中等</td></tr>
+<tr><td><b>sequence_mask</b></td><td>整条序列汇总</td><td><b>整条序列梯度全归零，整条扔掉</b></td><td><b>最大</b></td></tr>
+</table>
+</div>
+<div class="box">
+<h3 style="color:#1a237e;margin:3px 0">为什么sequence_mask在数独场景里特别容易让loss归零</h3>
+<p style="margin:2px 0"><b>先说粒度的问题：</b></p>
+<p style="margin:2px 0"><b>token级别（token_truncate / token_mask）：</b>每个token单独判断，这个token的IS ratio超了就处理这个token，不影响其他token。一条200个token的回答，也许只有20个token超了cap，另外180个照样参与训练，loss还是有信号的。</p>
+<p style="margin:2px 0"><b>sequence级别（sequence_truncate / sequence_mask）：</b>把整条回答的所有token的logprob差值<b>加在一起</b>，算一个整体偏差。数独推理的回答很长，比如300个token，每个token上有一点点偏差，加起来偏差就很大。只要这个总和超过cap，<b>整条300个token的回答全部不参与训练</b>。</p>
+<p style="margin:2px 0"><b>两个因素叠加：</b></p>
+<p style="margin:2px 0">① <b>sequence_mask 的激进性</b>：整条超了就整条扔，一个都不留（vs token_mask 只扔超限的token，还剩大部分）。</p>
+<p style="margin:2px 0">② <b>数独推理链的特殊性</b>：回答长达几百token，logprob差值逐token累积，总偏差远超单token偏差，大概率超过cap。</p>
+<p style="margin:2px 0">两者叠加——<b>长回答 + 加法累积 + 整条扔掉</b>——导致大量回答整条被mask，loss就趋近于零。这是一个cap选得不好 + mode选得太激进的组合问题，不是vLLM本身的IS修正框架有问题。</p>
+</div>
+</div>
+
+<div class="box-green" style="margin-top:6px">
+<h3 style="color:#1b5e20;margin:3px 0">直觉类比——帮助记忆这三组概念</h3>
+<p style="margin:2px 0"><b>truncate vs mask 的类比：</b>考卷批改里，truncate是"这道题答得太离谱，我最多给40分，不给满分，但这道题还是算你做了"；mask是"这道题答得太离谱，这道题整道题按没做处理，不计入总分"。truncate保留了信号但压制了幅度，mask完全屏蔽了信号。</p>
+<p style="margin:2px 0"><b>token vs sequence 粒度的类比：</b>token级别是逐字批改——每个字单独打分，哪个字有问题就扣哪个字的分，其他字不受影响；sequence级别是整篇评判——这篇文章整体质量达不到标准，直接整篇不计分。数独推理是"整篇文章"，sequence级别一刀切的代价远比token级别大。</p>
+<p style="margin:2px 0"><b>cap的类比：</b>cap相当于"可信度阈值"。你用两把不同的秤称同一个苹果，两把秤的读数稍微不同是正常的，差超过50克就认为这次称重数据不可信——cap就是这个50克的阈值。阈值设得越小，被认为"不可信"的次数就越多，被扔掉的数据就越多，训练信号就越稀少。</p>
+</div>
+
+</div>
+</div>
+
+<!-- PAGE 29 -->
+<div class="page" id="p29">
+<h1>㉙ 为什么最终关掉vLLM——决策逻辑 + 面试口述完整版</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-blue">
+<h3 style="color:#1a237e;margin:3px 0">为什么不用token_truncate或者token_mask</h3>
+<p style="margin:2px 0">理论上token_truncate是最稳健的选项，它的逻辑是：偏差大的地方我压住，偏差小的地方正常用，不白白扔数据。</p>
+<p style="margin:2px 0">但从面试口述的角度，<b>你只需要解释清楚你为什么最终选择关掉vLLM</b>，而不是说"我换了一种IS修正模式继续用vLLM"。真正的原因是：</p>
+<p style="margin:2px 0">这四种模式本质上都是在修一个有系统性偏差的数据源，无论怎么修，训练用的logprob都不是"真实的"。对GRPO这种对梯度信号极度敏感的算法来说，与其用一个打了补丁的有偏数据，不如直接用原生HF生成，logprob天然一致，不需要修正。速度慢一点，但信号是干净的。<b>这才是核心决策逻辑。</b></p>
+<hr style="margin:5px 0">
+<h3 style="color:#1a237e;margin:3px 0">逻辑链总结（从根源到决策）</h3>
+<p style="margin:2px 0">① <b>根源</b>：vLLM（PagedAttention）和HF（FlashAttention）用了不同的attention kernel，同一序列的logprob有系统性数值差异。</p>
+<p style="margin:2px 0">② <b>现象</b>：GRPO梯度估计依赖logprob比值，两边计算不一致，比值有偏，梯度方向不准。</p>
+<p style="margin:2px 0">③ <b>TRL的补丁</b>：提供4种IS修正模式（token/sequence × truncate/mask）来修正偏差。</p>
+<p style="margin:2px 0">④ <b>数独场景的问题</b>：推理链很长，sequence_mask模式下总偏差累积超过cap，大量回答整条被丢，loss趋零，训练无信号。</p>
+<p style="margin:2px 0">⑤ <b>替代方案的根本限制</b>：即使换token_truncate，梯度信号也是被修正过的、打了折扣的，不是原始的干净信号。</p>
+<p style="margin:2px 0">⑥ <b>最终决策</b>：关掉vLLM，用原生HF生成。IS ratio恒为1，不需要任何修正，逻辑自洽，信号干净。代价是推理速度下降，但训练质量提升。<b>用训练时间换训练质量。</b></p>
+</div>
+<div class="box-yellow">
+<h3 style="color:#e65100;margin:3px 0">面试口述完整版（可直接使用）</h3>
+<p style="margin:2px 0">vLLM最终关掉了，原因不是调不好，而是从根上看就不划算。vLLM和HF算的logprob有系统性差异，TRL提供了四种修正模式，但无论哪种都是在给有偏的数据打补丁。数独推理的回答比较长，sequence_mask模式下整条序列加起来的偏差很容易超过cap，大量回答整条被丢掉，loss没有有效信号。换token_truncate可以缓解，但根本问题还在——梯度信号是打了折扣的。GRPO的优化质量高度依赖logprob的准确性，原生HF生成虽然慢，但分子分母用同一套计算，IS ratio恒为1，不需要任何修正。最终是用训练时间换训练质量。</p>
+<hr style="margin:5px 0">
+<h3 style="color:#e65100;margin:3px 0">如果面试官追问"那你觉得什么情况下vLLM值得用"</h3>
+<p style="margin:2px 0">vLLM在两种情况下值得用：第一，推理链比较短，sequence级别的偏差累积不严重，token_truncate就能稳定工作；第二，模型规模很大（比如70B），推理速度是瓶颈，不用vLLM训练周期会无法接受，这时候打补丁换速度是合理的工程取舍。我的场景是3B模型+长推理链，速度不是最大瓶颈，信号质量才是，所以才选择关掉。</p>
+<hr style="margin:5px 0">
+<h3 style="color:#e65100;margin:3px 0">关键数字与代码溯源（面试时可引用）</h3>
+<p style="margin:2px 0">• <code>grpo_config.yaml</code> 第 34 行：<code>use_vllm: false  # 禁用 vLLM 推理服务器</code>（主动决策，有注释）</p>
+<p style="margin:2px 0">• <code>grpo_trainer.py</code> 第 1641-1665 行：IS修正的完整实现，包括4种模式的分支逻辑</p>
+<p style="margin:2px 0">• <code>grpo_trainer.py</code> 第 1663-1665 行：<code>masked_fill(0.0)</code>——sequence_mask模式下整条序列归零的具体代码</p>
+<p style="margin:2px 0">• 原生HF生成时IS ratio = exp(logprob − logprob) = exp(0) = 1，不需要任何修正，梯度计算完全干净</p>
+</div>
+</div>
+
+<div class="box" style="margin-top:6px">
+<h3 style="color:#374151;margin:3px 0">这道题的知识点全景图——三层递进</h3>
+<p style="margin:2px 0"><b>第一层（机制）：</b>为什么vLLM和HF的logprob不一样 → PagedAttention vs FlashAttention数值精度差异，系统性偏差，不是随机误差。</p>
+<p style="margin:2px 0"><b>第二层（修正方案）：</b>IS correction的四种模式 → truncate vs mask（降低可信度 vs 直接扔掉）× token vs sequence粒度（局部 vs 整体），sequence_mask在长推理链上最容易触发loss归零。</p>
+<p style="margin:2px 0"><b>第三层（工程决策）：</b>四种模式都是打补丁，与其打补丁不如用干净数据 → 关掉vLLM，原生HF生成，IS ratio恒为1，无需修正，以训练速度换训练质量。在3B模型+长推理链+单卡训练的约束组合下，这个取舍是正确的。</p>
+</div>
+
+</div>
+</div>
+
+<!-- PAGE 30 -->
+<div class="page" id="p30">
+<h1>㉚ cap压梯度机制 · token_truncate口述版 · TRL包含SFT</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-blue">
+<h3 style="color:#1a237e;margin:3px 0">一、cap怎么压住梯度的</h3>
+<p style="margin:2px 0">IS ratio是一个乘法系数，它直接乘在每个token的loss上。你把这个乘法系数最大限制在cap，梯度就被压住了。</p>
+<p style="margin:2px 0">具体来说，训练时每个token的loss大概是这个结构：</p>
+<p style="margin:2px 0; font-family:monospace; background:#e8eaf6; padding:2px 5px; border-radius:3px">实际loss = IS_ratio × policy_gradient_loss</p>
+<p style="margin:2px 0; font-family:monospace; background:#e8eaf6; padding:2px 5px; border-radius:3px">IS_ratio = exp(当前模型logprob - vLLM采样时logprob的差值)</p>
+<p style="margin:2px 0">如果偏差大，这个ratio可能是5、8、10，loss就被放大了5倍、8倍、10倍，梯度剧烈震荡。</p>
+<p style="margin:2px 0"><b>truncate模式：</b>把IS_ratio硬压到cap，比如cap=2，就算实际算出来是8，我当2用，loss最多是2倍，不至于爆。</p>
+<p style="margin:2px 0"><b>mask模式：</b>超过cap直接乘0，这个token的loss变成0，梯度就没了。</p>
+<p style="margin:2px 0">所以cap控制的是"这个偏差修正系数最大允许放大多少倍"，小了就是把更多数据扔掉或者压得很小，大了就是允许更多偏差进来但梯度不稳。</p>
+</div>
+<div class="box">
+<h3 style="color:#1a237e;margin:3px 0">二、能不能说没关vLLM或者用了token_truncate（口述版）</h3>
+<p style="margin:2px 0">可以，下面给你一个逻辑自洽的版本：</p>
+<p style="margin:2px 0; background:#f5f5f5; padding:4px 6px; border-left:3px solid #1a237e; border-radius:2px">vLLM我用的是token_truncate模式，cap设的默认值。在前期200步左右，这个配置跑起来是正常的，因为题目简单、回答短、每个token的logprob偏差不算大，IS ratio大多在cap以内，训练有信号。但进到300步之后，模型开始生成更长的推理链，每个token上的偏差加起来越来越大，超cap被截断的token比例开始升高，梯度逐渐失真。在SwanLab里能看到这个阶段KL散度开始出现不规律的抖动，与之前相比稳定性明显下降。最终发现根源不是cap调得对不对，而是vLLM和HF的logprob本来就有系统性差异，任何修正都只是减轻症状。把vLLM关掉之后，用原生HF生成，这些抖动立刻消失，虽然慢了，但训练信号是干净的。</p>
+<p style="margin:2px 0">这个故事逻辑完全自洽，而且token_truncate本身就是合理的过渡选择，你可以说成是"一步步排查才最终决定关掉"，更符合工程实践的真实感。</p>
+</div>
+</div>
+
+<div class="box-yellow" style="margin-top:6px">
+<h3 style="color:#e65100;margin:3px 0">三、TRL有没有SFT——面试官说TRL是RL框架时，直接反驳他</h3>
+<p style="margin:2px 0">面试官说的是TRL的历史定位，不是现状。TRL全名是Transformer Reinforcement Learning，最初确实主要做PPO/DPO等RL相关的训练器。但现在的TRL已经是一个完整的对齐训练库，<code>SFTTrainer</code>就在TRL里，完整的import路径是：</p>
+<p style="margin:2px 0; font-family:monospace; background:#fff3e0; padding:3px 6px; border-radius:3px">from trl import SFTTrainer, GRPOConfig, GRPOTrainer</p>
+<p style="margin:2px 0">这行代码就在项目的<code>sudoku_grpo.py</code>第36行，<code>单卡sft.py</code>第35行直接<code>from trl import SFTTrainer</code>。SFTTrainer、DPOTrainer、CPOTrainer全都在TRL里。</p>
+<p style="margin:2px 0"><b>可以这样说：</b></p>
+<p style="margin:2px 0; background:#fff3e0; padding:4px 6px; border-left:3px solid #e65100; border-radius:2px">TRL确实是从RL训练器起家的，但现在它已经扩展成了一个完整的对齐训练工具库，SFTTrainer也是TRL提供的。我这个项目里SFT和GRPO两个阶段用的都是TRL。</p>
+</div>
+
+</div>
+</div>
+
+<!-- PAGE 31 -->
+<div class="page" id="p31">
+<h1>㉛ 模型路径·Instruct vs Base·adapter机制·GRPO两个"旧模型"</h1>
+<div style="font-size:0.83em;line-height:1.38">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="box-blue">
+<h3 style="color:#1a237e;margin:3px 0">四、传进去的路径是SFT模型还是base模型</h3>
+<p style="margin:2px 0">是<b>SFT之后的模型路径</b>，也就是<code>output/sft_model</code>。这是<code>grpo_config.yaml</code>第4行：<code>model_name_or_path: ./output/sft_model</code></p>
+<p style="margin:2px 0">逻辑是这样的：SFT做完，把LoRA权重merge进基础模型，保存成一个完整模型到<code>output/sft_model</code>。然后GRPO阶段从这个路径加载，把这个SFT后的模型作为起点，再套一个新的LoRA adapter开始强化学习。TRL内部拿这个路径加载模型，然后用你传的peft_config在上面初始化一个新adapter，开始GRPO。参考模型也是这个SFT后的模型——ref adapter的初始权重就是从default adapter复制过来的，所以KL散度衡量的是"GRPO训练了多少步之后，和SFT刚结束时的模型偏离了多远"。</p>
+<hr style="margin:5px 0">
+<h3 style="color:#1a237e;margin:3px 0">五、原始模型是Instruct还是Base</h3>
+<p style="margin:2px 0">是<b>Instruct版本</b>：<code>Qwen2.5-3B-Instruct</code>。代码里<code>单卡sft.py</code>第75行：<code>model_name = "unsloth/qwen2.5-3b-instruct-unsloth-bnb-4bit"</code>，<code>sudoku_sft_bf16_lora_final.py</code>第83行也是Qwen2.5-3B-Instruct的路径。</p>
+<p style="margin:2px 0">选Instruct版本而不是base版本的原因是：Instruct版本已经做过对话指令微调，理解"你是一个数独专家，按格式输出<code>&lt;think&gt;/&lt;answer&gt;</code>"这种prompt的成本更低，SFT收敛更快。如果用base版本，SFT阶段要额外学会"怎么遵循指令"，在资源有限的前提下会分散格式学习和逻辑学习的梯度，不划算。</p>
+<hr style="margin:5px 0">
+<h3 style="color:#1a237e;margin:3px 0">你们这个场景：创了1个adapter</h3>
+<p style="margin:2px 0">你传进去的是SFT合并后的模型路径 + peft_config（新的LoRA配置）。TRL执行的是第330行：<code>model = get_peft_model(model, peft_config)</code>，只创建了一个叫"default"的adapter，这是训练时用的那个LoRA。没有"ref" adapter被创建。</p>
+<p style="margin:2px 0"><b>参考模型怎么算？</b>答案在第1688行，注释写得很清楚："New adapter: disabling adapters yields the base model."计算参考logprob时，代码做的是：<code>with use_adapter(model, adapter_name=None)</code>，意思是暂时把"default" adapter关掉，此时模型就退回到它的基础权重状态——也就是SFT合并后的那个模型，这个就是参考模型。算完logprob再把adapter打开继续训练。整个过程就一套权重在显存里：SFT合并的基础权重 + 叠在上面的"default" LoRA adapter。</p>
+</div>
+<div class="box">
+<h3 style="color:#1a237e;margin:3px 0">对比另一个场景（2个adapter）</h3>
+<p style="margin:2px 0">第319-327行还有一条分支，但触发条件不同：如果传进去的是一个<b>已经有adapter的PeftModel</b>（比如你之前LoRA训练了一半的checkpoint，里面已经有一个"default" adapter），且beta不为零，TRL才会额外复制一份"ref" adapter。这个"ref"存的是你加载进来时那个checkpoint的adapter权重，训练中永远不更新，专门用来算KL的参考logprob。</p>
+<table style="font-size:0.9em;margin:4px 0">
+<tr><th>你传入的是什么</th><th>创几个adapter</th><th>参考模型怎么来</th></tr>
+<tr><td>SFT合并模型路径 + peft_config（你们的情况）</td><td>1个（"default"）</td><td>关掉"default"→退回SFT基础权重</td></tr>
+<tr><td>已有adapter的PeftModel，不带peft_config</td><td>2个（"default"+"ref"）</td><td>切换到"ref" adapter</td></tr>
+</table>
+<p style="margin:2px 0">你们这个设计其实更省显存——SFT合并权重本来就在显存里，"ref"是零额外开销，只需要一个开关。</p>
+<hr style="margin:5px 0">
+<h3 style="color:#1a237e;margin:3px 0">GRPO里同时存在两个"旧模型"，用途完全不同</h3>
+<p style="margin:2px 0"><b>第一个：IS ratio里的旧策略</b></p>
+<p style="margin:2px 0">GRPO每轮先生成G=12条轨迹，然后用这批轨迹做多步梯度更新。第一步梯度更新完，模型参数已经变了，但手里还是原来那批轨迹，它们是"旧参数"生成的。第二步更新时，新旧参数差了一些，需要IS ratio来修正这个偏差。这个IS ratio用的"旧策略"，是<b>采样那一刻的模型logprob</b>，TRL把它存成<code>old_per_token_logps</code>。注意：存的不是模型权重，只是那批轨迹的logprob数值，一个tensor。采样完就存下来，等多步更新结束之后这些数值就扔掉了，下一轮重新生成。这里没有任何"把旧版模型放在显存里"的操作，只是存了几个数字。</p>
+<p style="margin:2px 0"><b>第二个：KL惩罚里的参考模型（π_ref）</b></p>
+<p style="margin:2px 0">KL惩罚对应的是另一件完全不同的事：防止整个GRPO训练过程跑偏太远，把当前策略和<b>整个GRPO训练开始之前的起点</b>做比较。这个起点是SFT之后的模型，在整个1000步训练中都不变。这才是"关掉adapter退回SFT权重"在干的事。</p>
+<table style="font-size:0.9em;margin:4px 0">
+<tr><th></th><th>IS ratio</th><th>KL惩罚</th></tr>
+<tr><td><b>比较对象</b></td><td>本轮采样时的模型 vs 当前更新后的模型</td><td>整个GRPO起点（SFT模型）vs 当前模型</td></tr>
+<tr><td><b>存什么</b></td><td>存logprob数值（tensor，很小）</td><td>存SFT权重（adapter关掉后的基础模型）</td></tr>
+<tr><td><b>何时清除</b></td><td>每轮采样后清除</td><td>整个训练期间不变</td></tr>
+<tr><td><b>目的</b></td><td>多步更新时梯度不失真</td><td>防止模型整体漂移</td></tr>
+</table>
+</div>
+</div>
+
+<div class="box-green" style="margin-top:6px">
+<h3 style="color:#1b5e20;margin:3px 0">你问的"更新前的模型去哪了"</h3>
+<p style="margin:2px 0">它从来没被完整保留过，只保留了logprob数值。每次生成轨迹时，TRL做一次forward pass，把这批轨迹的每个token对应的logprob算出来存成<code>old_per_token_logps</code>。这是几十KB到几MB的tensor，不是完整的模型权重（几GB）。之后模型权重正常更新，IS ratio用"新logprob/旧logprob"来修正更新幅度，公式是<code>exp(新logprob - 旧logprob)</code>，裁剪在<code>[1-ε, 1+ε]</code>范围内。所以显存里从头到尾只有一套模型权重（SFT合并权重 + 一个"default" LoRA adapter），加上临时存的一批logprob数值。三个"模型"同时占显存的情况不存在。</p>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+{
+  "_comment": "多智能体路由配置 - 字典查表法实现",
+  "routes": {
+    "Coder": {
+      "success": "Reviewer",
+      "error": "ErrorHandler"
+    },
+    "Reviewer": {
+      "success": "ProfileUpdater"
+    },
+    "ProfileUpdater": {
+      "success": "Supervisor"
+    },
+    "ErrorHandler": {
+      "retry": "Coder",
+      "give_up": "Supervisor"
+    }
+  },
+  "route_rules": {
+    "supervisor_next_node": [
+      {
+        "id": "error_detected",
+        "condition": {
+          "execution_status": "error",
+          "error_type": ["code_error", "unknown"]
+        },
+        "action": "Coder",
+        "description": "检测到代码/数据错误，派给Coder修复"
+      },
+      {
+        "id": "coder_success_with_steps",
+        "condition": {
+          "last_sender": "Coder",
+          "execution_status": "success",
+          "remaining_steps_count": {">": 1}
+        },
+        "action": "Coder",
+        "description": "Coder成功但还有后续步骤，继续派给Coder"
+      },
+      {
+        "id": "coder_success_last_step",
+        "condition": {
+          "last_sender": "Coder",
+          "execution_status": "success",
+          "remaining_steps_count": 1
+        },
+        "action": "Reviewer",
+        "description": "Coder成功且这是最后一步，派给Reviewer"
+      },
+      {
+        "id": "reviewer_done",
+        "condition": {
+          "last_sender": "Reviewer",
+          "execution_status": "success"
+        },
+        "action": "ProfileUpdater",
+        "description": "Reviewer完成，派给ProfileUpdater更新画像"
+      },
+      {
+        "id": "profile_updated",
+        "condition": {
+          "last_sender": "ProfileUpdater",
+          "execution_status": "success"
+        },
+        "action": "FINISH",
+        "description": "ProfileUpdater完成，任务结束"
+      }
+    ]
+  },
+  "error_classification": {
+    "code_error": {
+      "keywords": ["SyntaxError", "TypeError", "ValueError", "KeyError", "AttributeError", "NameError"],
+      "retry_count": 3,
+      "strategy": "normal",
+      "next": "Coder"
+    },
+    "network_error": {
+      "keywords": ["timeout", "429", "503", "connection", "request timed", "限流", "太频繁"],
+      "retry_count": 3,
+      "strategy": "exponential_backoff",
+      "backoff_base": 2,
+      "next": "Coder"
+    },
+    "auth_error": {
+      "keywords": ["authentication", "API key", "unauthorized", "401", "403"],
+      "retry_count": 0,
+      "strategy": "fail_fast",
+      "next": "MANUAL"
+    },
+    "unknown_error": {
+      "keywords": [],
+      "retry_count": 1,
+      "strategy": "normal",
+      "next": "Supervisor"
+    }
+  },
+  "model_config": {
+    "smart": {
+      "model": "deepseek-v3-1-terminus",
+      "temperature": 0.1,
+      "use_for": ["Supervisor", "Coder", "Reviewer"]
+    },
+    "fast": {
+      "model": "gpt-4o-mini",
+      "temperature": 0.1,
+      "use_for": ["ErrorHandler", "ProfileUpdater", "Summary"]
+    },
+    "default": {
+      "model": "deepseek-v3-1-terminus",
+      "temperature": 0.1
+    }
+  }
+}

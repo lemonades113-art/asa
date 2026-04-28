@@ -1,0 +1,62 @@
+{
+  "dividend_expert": {
+    "skill_name": "dividend_expert",
+    "description": "处理股票分红、股息率、送转股相关数据的专家技能包。",
+    "trigger_keywords": ["分红", "股息", "送转", "除权", "派息"],
+    "prerequisites": {
+      "required_packages": ["tushare", "pandas"],
+      "required_fields": ["dv_ttm", "div_proc"],
+      "version_note": "Tushare Pro 账户权限：需要 dividend 接口访问权限"
+    },
+    "content": "【技能注入：分红专家】\n1. 字段冲突提示：Tushare API 中的 'dv_ttm' (股息率) 是百分比数值（如 3.5 表示 3.5%）。在计算股息支付率或市值比时，必须先除以 100。\n2. 状态过滤：查询分红方案时，务必检查 'div_proc' 字段，仅处理 '实施' 或 '公告' 状态，排除 '未实施'。\n3. 日期对齐：计算年度股息时，确保公告日期在对应财报年度之后。\n4. 【重试限制】最多重试3次，失败后输出错误并停止，禁止无限循环。\n5. 【空值处理】查询多只股票时，单只股票数据为空应跳过继续，不要中断整个流程。",
+    "template_code": "df['real_dv_ratio'] = df['dv_ttm'] / 100  # 修正百分比为小数\n# 重试限制示例\nmax_retries = 3\nfor attempt in range(max_retries):\n    try:\n        df = pro.dividend(ts_code=code)\n        if not df.empty: break\n    except:\n        if attempt == max_retries - 1: print('[ERROR]: 重试3次失败'); break"
+  },
+  "charting_expert": {
+    "skill_name": "charting_expert",
+    "description": "专业金融绘图技能包，解决中文字体显示和路径保存问题。",
+    "trigger_keywords": ["画图", "展示图表", "可视化", "曲线", "柱状图"],
+    "prerequisites": {
+      "required_packages": ["matplotlib", "pandas"],
+      "required_fields": [],
+      "version_note": "需要 SimHei 字体（Windows 自带）或 matplotlib 中文字体支持"
+    },
+    "content": "【技能注入：绘图专家】\n1. 中文支持：必须在绘图代码开头加入: plt.rcParams['font.sans-serif']=['SimHei']; plt.rcParams['axes.unicode_minus']=False。\n2. 路径强制：生成的图片必须通过 plt.savefig(f'./output/{uuid.uuid4()}.png') 保存。\n3. 交互反馈：代码执行最后必须 print(f'CHART_PATH: {path}') 供前端抓取。\n4. 【数据量限制】绘图前检查数据行数，超过500行应采样或聚合，避免内存溢出。\n5. 【空数据检查】绘图前必须检查 df.empty，空数据时输出 [WARNING] 并跳过绘图。",
+    "template_code": "import matplotlib.pyplot as plt\nplt.rcParams['font.sans-serif']=['SimHei']\n# 空数据检查\nif df.empty:\n    print('[WARNING]: 数据为空，跳过绘图')\nelse:\n    plt.savefig(f'./output/{uuid.uuid4()}.png')"
+  },
+  "finance_audit": {
+    "skill_name": "finance_audit",
+    "description": "财务报表审计技能包，处理会计准则差异、单位转换及财报发布规律。",
+    "trigger_keywords": ["财报", "收入", "利润", "资产负债", "季报", "年报"],
+    "prerequisites": {
+      "required_packages": ["tushare", "pandas", "numpy"],
+      "required_fields": ["revenue", "report_type", "ann_date"],
+      "version_note": "Tushare Pro 账户权限：需要 income / balancesheet / cashflow 接口权限"
+    },
+    "content": "【技能注入：财务审计】\n1. 单位转换：Tushare 原始单位为元，强烈建议除以 1e8 转换为'亿元'展示。\n2. 报告期坑：每年1-4月查询Q1数据通常为空，需降级查询上一年度年报（report_type=1）。\n3. 数据滞后：财报发布有法定周期，最新数据通常滞后 1-2 个月，务必检查 ann_date。\n4. 【并发控制】同时查询多只股票时，使用批量接口或控制并发数 <= 5，避免API限流。\n5. 【空值降级】年报数据为空时，可尝试查询季报并年化估算，但必须标注数据来源和估算方法。",
+    "template_code": "df['revenue_bn'] = df['revenue'] / 1e8\n# 优先取年报，空值降级\ndf_annual = df[df['report_type'] == '1']\nif df_annual.empty:\n    print('[WARNING]: 年报为空，尝试季报')\n    df_quarter = df[df['report_type'] == '2']"
+  },
+  "market_expert": {
+    "skill_name": "market_expert",
+    "description": "多市场（港股、指数、基金）规则适配专家包。",
+    "trigger_keywords": ["港股", "HK", "指数", "ETF", "基金"],
+    "prerequisites": {
+      "required_packages": ["tushare", "pandas"],
+      "required_fields": ["ts_code"],
+      "version_note": "港股数据需要 Tushare Pro 2000积分以上权限"
+    },
+    "content": "【技能注入：市场专家】\n1. 港股格式：代码必须补全后缀，如 '00700.HK'，否则 API 报错。\n2. 指数/ETF：PE 字段通常为 NaN，分析估值时应切换为 PB 或 股息率 (dividend_yield)。\n3. 停牌处理：若 daily_basic 返回为空，说明当日可能停牌或为新股，应尝试调用 daily 接口获取最后交易日数据。\n4. 【批量限制】同时查询多只股票（如板块扫描）时，必须分批处理，每批 <= 10 只，间隔 1 秒。\n5. 【限流处理】遇到 API 限流错误时，等待 3 秒后重试，最多重试 2 次。",
+    "template_code": "ts_code = ts_code if ts_code.endswith('.HK') else f'{ts_code}.HK'\n# ETF 估值处理\nvaluation_field = 'pb' if is_etf else 'pe'\n# 批量限制\nimport time\nfor batch in [codes[i:i+10] for i in range(0, len(codes), 10)]:\n    process_batch(batch)\n    time.sleep(1)"
+  },
+  "error_handling": {
+    "skill_name": "error_handling",
+    "description": "通用错误处理和重试策略技能包。",
+    "trigger_keywords": ["错误", "失败", "重试", "超时", "限流"],
+    "prerequisites": {
+      "required_packages": [],
+      "required_fields": [],
+      "version_note": "无特殊依赖，Python 标准库即可"
+    },
+    "content": "【技能注入：错误处理专家】\n1. 【重试上限】任何API调用最多重试3次，超过必须停止并报告错误。\n2. 【递归保护】避免在ErrorHandler中再次触发可能导致递归的错误处理逻辑。\n3. 【空值接受】金融数据存在空值是正常的，接受空值并输出警告，不要无限重试。\n4. 【优雅降级】主方案失败时，应有备选方案（如换API、扩大时间范围），但最多2层降级。\n5. 【停止条件】明确停止条件：重试3次失败、数据为空但已尝试所有备选方案、遇到授权错误。",
+    "template_code": "# 标准重试模板\nmax_retries = 3\nfor attempt in range(max_retries):\n    try:\n        data = fetch_data()\n        if data: return data\n    except Exception as e:\n        print(f'[WARNING]: 第{attempt+1}次尝试失败: {e}')\n        if attempt == max_retries - 1:\n            print('[ERROR]: 已达最大重试次数，停止')\n            return None\n        time.sleep(1)"
+  }
+}

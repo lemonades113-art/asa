@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASA 真实产出案例 · 完整答案展示</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif; background: #f0f2f5; color: #1a1a2e; line-height: 1.75; }
+
+  .page-header { background: #0f172a; color: #fff; padding: 32px 48px; }
+  .page-header h1 { font-size: 20px; font-weight: 700; }
+  .page-header p { margin-top: 6px; color: #64748b; font-size: 13px; }
+
+  .meta-bar { background: #1e293b; color: #94a3b8; font-size: 12px; padding: 10px 48px; display: flex; gap: 32px; }
+  .meta-bar span { color: #38bdf8; font-weight: 600; }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+
+  /* ── 分类标题 ── */
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #64748b; text-transform: uppercase; margin: 36px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+
+  /* ── 案例卡片 ── */
+  .case { background: #fff; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,.07); margin-bottom: 24px; overflow: hidden; }
+  .case-head { padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid #e8edf3; display: flex; align-items: center; gap: 12px; }
+  .tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 4px; }
+  .tag-easy { background: #dcfce7; color: #166534; }
+  .tag-medium { background: #dbeafe; color: #1e40af; }
+  .tag-cross { background: #fef9c3; color: #854d0e; }
+  .tag-ratio { background: #fce7f3; color: #9d174d; }
+  .tag-fail { background: #fee2e2; color: #991b1b; }
+  .case-query { font-size: 15px; font-weight: 600; color: #0f172a; flex: 1; }
+  .case-meta { font-size: 12px; color: #94a3b8; margin-left: auto; white-space: nowrap; }
+
+  /* ── 答案区域 ── */
+  .case-body { padding: 24px; }
+  .answer-text { font-size: 14px; color: #334155; line-height: 1.85; white-space: pre-wrap; }
+
+  /* 美化答案内的 Markdown 元素 */
+  .answer-text strong, .answer-text b { color: #0f172a; font-weight: 700; }
+
+  .data-tag { display: inline-block; background: #0f172a; color: #86efac; font-family: monospace; font-size: 12px; padding: 2px 8px; border-radius: 4px; margin-bottom: 12px; }
+
+  /* 表格 */
+  .md-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .md-table th { background: #f1f5f9; color: #475569; font-weight: 600; padding: 8px 12px; text-align: left; border: 1px solid #e2e8f0; }
+  .md-table td { padding: 8px 12px; border: 1px solid #e2e8f0; color: #334155; }
+  .md-table tr:hover td { background: #f8fafc; }
+
+  /* JSON块 */
+  .json-block { background: #0f172a; color: #7dd3fc; font-family: "Courier New", monospace; font-size: 12px; padding: 14px 16px; border-radius: 6px; margin: 12px 0; overflow-x: auto; white-space: pre; }
+
+  /* 关键数字高亮 */
+  .num { background: #eff6ff; color: #1d4ed8; font-weight: 700; padding: 1px 5px; border-radius: 3px; font-family: monospace; }
+
+  /* 分割线 */
+  .section-divider { border: none; border-top: 2px dashed #e2e8f0; margin: 12px 0; }
+
+  /* 失败案例 */
+  .fail-body { padding: 20px 24px; background: #fff5f5; }
+  .fail-error { font-family: monospace; font-size: 13px; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; }
+  .fail-note { font-size: 13px; color: #78350f; background: #fffbeb; border-left: 3px solid #f59e0b; padding: 10px 14px; border-radius: 0 4px 4px 0; }
+
+  /* 系统说明栏 */
+  .sys-note { font-size: 12px; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-top: 14px; }
+  .sys-note strong { color: #0f172a; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>ASA 金融投研多智能体系统 · 真实产出案例完整展示</h1>
+  <p>数据来源：evaluation_results/real_eval_20260315_202555.json · trajectories/trajectories_20260315_212635.jsonl</p>
+</div>
+<div class="meta-bar">
+  运行时间：<span>2026-03-15 20:25</span> &nbsp;|&nbsp;
+  LLM后端：<span>DeepSeek-v3 (api.deepseek.com)</span> &nbsp;|&nbsp;
+  总用例：<span>10</span> &nbsp;|&nbsp;
+  通过：<span>9/10 · Pass@1=90%</span> &nbsp;|&nbsp;
+  均值延迟：<span>364s</span>
+</div>
+
+<div class="container">
+
+  <!-- ══════════════ 个股估值查询 ══════════════ -->
+  <div class="section-label">个股估值查询 · 对应简历："个股估值分析"场景</div>
+
+  <!-- Case 1 比亚迪PE -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-easy">Easy · 个股估值</span>
+      <span class="case-query">比亚迪的静态市盈率是多少</span>
+      <span class="case-meta">✓ 耗时 220s · Hit@1=100%</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: 原始JSON已附 · 数据来源: Tushare daily_basic接口</div>
+      <div class="json-block">{
+  "stock": "比亚迪",
+  "code": "002594.SZ",
+  "trade_date": "2026-03-13",
+  "close_price": 99.67,
+  "pe_ttm": 23.7,
+  "pb": 4.13,
+  "total_mv_yi": 9087.11,
+  "data_source": "Tushare daily_basic接口",
+  "note": "pe_ttm为滚动市盈率(TTM)，即静态市盈率"
+}</div>
+      <div class="answer-text">根据查询到的数据，<strong>比亚迪 (002594.SZ)</strong> 的静态市盈率（即滚动市盈率 TTM）为 <strong class="num">23.7</strong>。
+
+<strong>关键数据详情</strong>
+- 股票名称：比亚迪
+- 股票代码：002594.SZ
+- 查询日期：2026-03-13
+- 收盘价：<strong class="num">99.67 元</strong>
+- 静态市盈率 (PE TTM)：<strong class="num">23.7</strong>
+- 市净率 (PB)：4.13
+- 总市值：<strong class="num">9087.11 亿元</strong>
+
+<strong>说明</strong>
+1. 数据定义：静态市盈率（TTM）的计算公式为"当前股价 / 最近四个季度每股收益之和"，是衡量股票估值水平的核心指标之一。
+2. 数据来源：本次数据来源于 Tushare Pro API 的 daily_basic 接口。
+3. 估值参考：市盈率为23.7，通常需要结合公司历史估值、行业平均水平及未来增长预期进行综合判断。</div>
+      <div class="sys-note"><strong>系统动作说明：</strong>意图识别"静态市盈率"→RAG召回pe_ttm字段文档（字段级chunk）→Coder调用daily_basic接口→[DATA]:协议输出原始JSON→生成分析文本。单步完成，无重试。</div>
+    </div>
+  </div>
+
+  <!-- Case 2 招商银行股息率 -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-easy">Easy · 个股估值</span>
+      <span class="case-query">查询招商银行的股息率</span>
+      <span class="case-meta">✓ 耗时 242s · Hit@1=66.7%</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: 数据已获取</div>
+      <div class="json-block">{
+  "stock": { "name": "招商银行", "code": "600036.SH" },
+  "dividend_yield": {
+    "dv_ttm": 7.578,
+    "dv_ratio": 5.0302,
+    "date": "2026-03-13",
+    "close_price": 39.76,
+    "description": "股息率(TTM) = 最近12个月每股分红 / 当前股价 × 100%"
+  },
+  "source": "Tushare daily_basic API",
+  "query_time": "2026-03-15"
+}</div>
+      <div class="answer-text"><strong>招商银行股息率查询结果</strong>
+
+<strong>招商银行(600036.SH)</strong> 在 2026年3月13日 的股息率情况如下：
+
+- 股息率(TTM)：<strong class="num">7.58%</strong>
+- 股息率(静态)：<strong class="num">5.03%</strong>
+- 当日收盘价：<strong class="num">39.76元</strong>
+
+<strong>数据解读</strong>
+股息率(TTM) 是衡量股票分红回报的重要指标，计算公式为：
+  股息率(TTM) = 最近12个月每股分红 ÷ 当前股价 × 100%
+
+招商银行当前 7.58% 的股息率水平：
+✅ 高于银行股平均水平（通常3-5%）
+✅ 显示较强的分红能力
+✅ 对追求稳定收益的投资者具有吸引力
+
+<strong>投资提示</strong>
+1. 高股息率优势：7.58%的股息率显著高于多数理财产品
+2. 银行股特点：招商银行作为优质银行股，分红相对稳定
+3. 风险提示：股息率受股价波动影响，需关注银行基本面变化
+
+📌 数据来源：Tushare Pro API | 查询时间：2026年3月15日
+📌 说明：股息率(TTM)基于最近12个月分红数据计算，更能反映当前分红水平</div>
+      <div class="sys-note"><strong>系统动作说明：</strong>kw_recall=66.7%（低于其他case）——用户查询"股息率"而非精确字段名，系统通过金融同义词表扩展到dv_ttm/dv_ratio两个字段，均输出并加注释，未丢失任何信息。</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 比率自动计算 ══════════════ -->
+  <div class="section-label">比率自动计算 · 对应简历："比率自动计算"场景</div>
+
+  <!-- Case 3 茅台CAGR -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-ratio">Medium · 增长率计算</span>
+      <span class="case-query">计算贵州茅台最近3年的年均净利润增长率</span>
+      <span class="case-meta">✓ 耗时 403s · Hit@1=100%</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: n_income_attr_p字段 · 3年完整年报数据</div>
+      <div class="answer-text"><strong>贵州茅台（600519.SH）最近3年净利润增长率分析</strong>
+
+<strong>数据概况</strong>
+- 分析期间：2023年 - 2025年（3个完整年度）
+- 数据来源：Tushare Pro API，使用归属母公司股东的净利润（n_income_attr_p字段）
+- 数据质量：3个年度数据完整，单位已转换为亿元
+
+<strong>净利润数据（亿元）</strong>
+- 2023年：<strong class="num">747.34亿元</strong>
+- 2024年：<strong class="num">862.28亿元</strong>（同比增长 +15.38%）
+- 2025年：<strong class="num">646.27亿元</strong>（同比下降 -25.05%）
+
+<strong>增长率分析</strong>
+1. 复合年均增长率（CAGR）：<strong class="num">-7.01%</strong>
+   计算公式：(2025年净利润 / 2023年净利润)^(1/2) - 1
+
+2. 逐年增长率：
+   2023→2024：+15.38%
+   2024→2025：-25.05%
+
+3. 平均年度增长率：-4.83%
+
+<strong>关键发现</strong>
+1. 增长波动显著：贵州茅台在2024年实现15.38%的强劲增长后，2025年出现25.05%的大幅下滑
+2. 整体负增长：3年期间复合年均增长率为-7.01%，显示净利润整体呈下降趋势
+3. 数据可靠性：所有数据均来自正式年报，使用一致的净利润计算字段
+
+<strong>注意事项</strong>
+- 2025年数据可能为初步或预估数据，需关注正式年报发布
+- 净利润大幅波动可能受宏观经济、行业政策或公司特定因素影响
+- 建议结合营收、毛利率等其他财务指标进行综合分析
+
+<strong>结论</strong>：贵州茅台最近3年的年均净利润增长率为负（-7.01%），主要受2025年净利润大幅下滑的影响。虽然2024年表现良好，但2025年的显著下降导致整体增长率为负值。</div>
+      <div class="sys-note"><strong>系统动作说明（多步推理）：</strong>步骤1→取3年income数据（n_income_attr_p）；步骤2→单位换算（元→亿元）；步骤3→计算逐年增长率；步骤4→计算CAGR。每步均有[DATA]:协议输出，步骤队列门控确保无早停。耗时403s为4个API调用序列加推理时间。</div>
+    </div>
+  </div>
+
+  <!-- Case 招商银行平均ROE -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-ratio">Medium · 均值计算</span>
+      <span class="case-query">计算招商银行近5年的平均ROE</span>
+      <span class="case-meta">✓ 耗时 241s · Hit@1=66.7%</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: roe_yearly字段 · 去重处理 · 实际覆盖4个完整财年</div>
+      <div class="answer-text"><strong>招商银行近5年平均ROE分析报告</strong>
+
+根据 Tushare Pro API 提供的财务指标数据，招商银行(600036.SH) 在 2021年至2024年（近4个完整财年）的平均净资产收益率(ROE) 为：
+
+平均ROE：<strong class="num">14.63%</strong>
+
+<strong>详细年度数据</strong>（基于 roe_yearly 年度净资产收益率字段）：</div>
+      <table class="md-table">
+        <thead><tr><th>年份</th><th>ROE (%)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>2024</strong></td><td><strong>12.89%</strong></td></tr>
+          <tr><td><strong>2023</strong></td><td>14.50%</td></tr>
+          <tr><td><strong>2022</strong></td><td>15.30%</td></tr>
+          <tr><td><strong>2021</strong></td><td>15.16%</td></tr>
+        </tbody>
+      </table>
+      <div class="answer-text">注：数据中2022年有重复记录，计算平均值时已自动去重处理。
+
+<strong>分析与说明</strong>
+1. 趋势观察：招商银行的ROE从2021年的15.16%逐步下降至2024年的12.89%，盈利能力在近两年有所承压。
+2. 数据质量：计算基于官方财务指标中的年度ROE(roe_yearly)，该指标能更准确地反映公司全年的净资产收益水平。
+3. 行业对比：14.63%的平均ROE在银行业中仍属于优秀水平，体现了招商银行较强的盈利能力和股东回报能力。
+
+<strong>重要提示</strong>
+- 数据范围：当前可获取的最新完整年度数据截至2024年，因此"近5年"实际覆盖了2021-2024共4个财年。
+- 数据源：Tushare Pro API，更新日期为2026-03-15。
+- 指标定义：ROE(净资产收益率) = 净利润 / 平均净资产。
+
+<strong>结论</strong>：招商银行在过去四个完整财年里，保持了平均 14.63% 的净资产收益率，展现了其作为行业龙头持续、稳健的盈利能力。</div>
+      <div class="sys-note"><strong>系统动作说明：</strong>系统主动识别"近5年"但实际数据只有4年，在输出中明确标注"实际覆盖2021-2024共4个财年"而非虚假补全。去重逻辑为代码层自动处理，非LLM估算。</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 跨表财务对比 ══════════════ -->
+  <div class="section-label">跨表财务对比 · 对应简历："跨表财务对比"场景</div>
+
+  <!-- Case 茅台五粮液ROE -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-cross">Medium · 跨表对比</span>
+      <span class="case-query">对比贵州茅台和五粮液的ROE数据</span>
+      <span class="case-meta">✓ 耗时 408s · Hit@1=100%</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: fina_indicator接口 · 两表同期对齐 · 含历史趋势与稳定性分析</div>
+      <table class="md-table">
+        <thead><tr><th>公司</th><th>股票代码</th><th>最新ROE</th><th>报告期</th><th>数据来源</th></tr></thead>
+        <tbody>
+          <tr><td><strong>贵州茅台</strong></td><td>600519.SH</td><td><strong class="num">35.16%</strong></td><td>2025-09-30</td><td>Tushare Pro API</td></tr>
+          <tr><td><strong>五粮液</strong></td><td>000858.SZ</td><td><strong class="num">20.80%</strong></td><td>2025-09-30</td><td>Tushare Pro API</td></tr>
+        </tbody>
+      </table>
+      <div class="answer-text"><strong>关键差异</strong>
+- 绝对差异：<strong class="num">14.36个百分点</strong>
+- 相对差异：贵州茅台的ROE比五粮液高出 69.0%
+- ROE排名：贵州茅台 > 五粮液
+
+<strong>历史趋势分析</strong>
+
+贵州茅台：
+- 最新ROE：35.16%（2025年9月30日）
+- 历史波动：相对稳定，变异系数(CV)为 8.11%
+- 趋势：从2024年底的38.43%下降至当前水平
+
+五粮液：
+- 最新ROE：20.80%（2025年9月30日）
+- 历史波动：较大，变异系数(CV)为 23.29%
+- 趋势：从2025年3月的42.24%大幅下降至当前水平</div>
+      <table class="md-table">
+        <thead><tr><th>指标</th><th>贵州茅台</th><th>五粮液</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><strong>平均ROE</strong></td><td>38.79%</td><td>29.03%</td><td>历史平均水平</td></tr>
+          <tr><td><strong>标准差</strong></td><td>3.15</td><td>6.76</td><td>波动程度</td></tr>
+          <tr><td><strong>变异系数(CV)</strong></td><td><strong class="num">8.11%</strong></td><td><strong class="num">23.29%</strong></td><td>稳定性指标（越低越稳定）</td></tr>
+        </tbody>
+      </table>
+      <div class="sys-note"><strong>系统动作说明（跨表）：</strong>分别调用两只股票的fina_indicator接口→各自取最新ROE→确认报告期一致（均为2025-09-30）→计算差值→额外计算历史序列的均值/标准差/CV，超出了用户原始请求，提供了趋势稳定性维度。</div>
+    </div>
+  </div>
+
+  <!-- Case 茅台五粮液毛利率 -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-cross">Medium · 跨表对比</span>
+      <span class="case-query">分析茅台和五粮液的毛利率差异</span>
+      <span class="case-meta">✓ 耗时 460s · Hit@1=100%</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: income_statement接口 · gross_profit_margin字段 · 2025Q3同期对比</div>
+      <table class="md-table">
+        <thead><tr><th>指标</th><th>贵州茅台</th><th>五粮液</th><th>差异</th></tr></thead>
+        <tbody>
+          <tr><td><strong>毛利率</strong></td><td><strong class="num">91.29%</strong></td><td><strong class="num">74.93%</strong></td><td><strong class="num">+16.36个百分点</strong></td></tr>
+          <tr><td>数据报告期</td><td>2025-09-30</td><td>2025-09-30</td><td>同期对齐</td></tr>
+        </tbody>
+      </table>
+      <div class="answer-text"><strong>差异原因深度解析</strong>
+
+<strong>1. 产品结构与定价权的根本差异</strong>
+贵州茅台：核心大单品飞天茅台占据绝对主导地位，其超高端定位和强金融属性赋予了公司无与伦比的定价权。产品结构单一且高端化集中，直接推升整体毛利率。
+五粮液：产品线更为丰富，涵盖从第八代普五（高端）到系列酒（中端）的多个价格带。虽然普五是核心，但中端产品占比相对较高，产品结构的多元化在一定程度上稀释了整体毛利率。
+
+<strong>2. 品牌价值与稀缺性塑造的护城河</strong>
+茅台：品牌已成为"硬通货"和社交货币，其稀缺性（受产地、工艺限制）被市场持续放大，供需长期失衡是支撑其超高溢价和毛利率的核心基础。
+五粮液：同为顶级名酒，品牌价值深厚，但在绝对稀缺性和投资收藏属性上略逊于茅台，市场竞争（尤其是千元价格带）更为激烈，限制了其溢价能力的上限。
+
+<strong>3. 成本与酿造工艺的天然壁垒</strong>
+茅台：独特的酱香型工艺（"12987"工艺、生产周期长）和赤水河流域的不可复制性，构成了深度的地理与工艺护城河。虽然原材料成本不低，但相对于其极高的售价，成本占比显得微乎其微。
+五粮液：作为浓香型代表，其工艺同样卓越，但原材料（粮食）成本在营收中的占比相对更为显著，对毛利率的边际影响更大。
+
+<strong>4. 销售模式与渠道利润分配</strong>
+茅台：近年来大力提升直营渠道（如"i茅台"数字营销平台）占比。直营渠道以更高的出厂价销售，直接将部分原本属于经销商的利润回收至上市公司，进一步抬升了毛利率。</div>
+      <div class="sys-note"><strong>系统动作说明：</strong>报告期均为2025-09-30，同期对比有效。毛利率字段为income_statement接口的gross_profit_margin，系统自动识别正确字段名（非LLM估算"毛利/营收"）。差异原因分析为LLM基于数据的定性推断，非捏造。</div>
+    </div>
+  </div>
+
+  <!-- Case 比亚迪vs宁德时代 -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-cross">Medium · 跨表对比</span>
+      <span class="case-query">对比比亚迪和宁德时代的资产负债率</span>
+      <span class="case-meta">✓ 耗时 238s · Hit@1=100%</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: fina_indicator接口 · debt_to_assets字段 · 注意：报告期不同</div>
+      <table class="md-table">
+        <thead><tr><th>项目</th><th>比亚迪 (002594.SZ)</th><th>宁德时代 (300750.SZ)</th><th>差异</th></tr></thead>
+        <tbody>
+          <tr><td><strong>资产负债率</strong></td><td><strong class="num">71.35%</strong></td><td><strong class="num">61.94%</strong></td><td><strong>比亚迪高出 9.41%</strong></td></tr>
+          <tr><td>报告期</td><td>2025-09-30（Q3）</td><td>2025-12-31（Q4）</td><td>⚠️ 报告期不同</td></tr>
+          <tr><td>数据来源</td><td colspan="3">Tushare Pro API (fina_indicator)</td></tr>
+        </tbody>
+      </table>
+      <div class="answer-text"><strong>财务杠杆水平分析</strong>
+
+比亚迪 (71.35%)：资产负债率处于较高水平。这通常意味着公司运用了较多的债务融资来支持其业务扩张（如新能源汽车、电池、电子等多元化业务），财务杠杆效应和财务风险均相对较高。
+
+宁德时代 (61.94%)：资产负债率同样处于较高水平，但显著低于比亚迪。作为全球动力电池龙头，其资本结构相对稳健，但仍利用了一定的债务来支持其大规模的产能建设和研发投入。
+
+<strong>差异原因推测</strong>
+- 业务模式差异：比亚迪是垂直整合型制造商，业务涵盖整车、电池、半导体等多个重资产领域，对资本开支需求巨大，可能导致负债率更高。
+- 行业地位与融资能力：宁德时代在动力电池领域占据绝对领先地位，现金流和盈利能力强劲，可能拥有更强的内生增长能力和更优的债务融资条件。
+- 报告期差异：数据取自不同季度，可能受季节性经营或结算周期影响。
+
+<strong>风险与机会</strong>
+- 高杠杆风险：两家公司的负债率均超过60%，需关注宏观经济下行、利率上升或行业周期波动时可能带来的偿债压力。
+- 增长驱动：当前的负债水平也反映了二者正处于积极的投资与扩张周期，若能有效转化为未来的市场份额和利润，将带来可观的股东回报。
+
+<strong>结论</strong>：从资产负债率来看，宁德时代的资本结构相对比亚迪更为稳健。比亚迪更高的负债率与其更广泛的业务布局和重资产投入策略相符。</div>
+      <div class="sys-note"><strong>系统动作说明：</strong>系统主动识别到两只股票报告期不同（比亚迪Q3、宁德时代Q4），在输出中明确标注"⚠️报告期差异"，未强行等价比较。这体现了故障归因机制中的"数据质量主动披露"逻辑。</div>
+    </div>
+  </div>
+
+  <!-- Case 工行建行总资产 -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-cross">Medium · 跨表对比</span>
+      <span class="case-query">对比工商银行和建设银行的总资产规模</span>
+      <span class="case-meta">✓ 耗时 210s · Hit@1=100%（最快Medium）</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: balance_sheet接口 · total_assets字段 · 2025-09-30同期</div>
+      <table class="md-table">
+        <thead><tr><th>项目</th><th>工商银行 (601398.SH)</th><th>建设银行 (601939.SH)</th><th>对比结果</th></tr></thead>
+        <tbody>
+          <tr><td><strong>总资产规模</strong></td><td><strong class="num">528,134.21亿元</strong></td><td><strong class="num">453,690.94亿元</strong></td><td>工商银行更大</td></tr>
+          <tr><td>报告期</td><td>2025-09-30</td><td>2025-09-30</td><td>✅ 同期数据</td></tr>
+          <tr><td>绝对差异</td><td colspan="3"><strong class="num">+74,443.27亿元</strong></td></tr>
+          <tr><td>相对差异</td><td colspan="3"><strong class="num">+16.41%</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="answer-text"><strong>规模排名</strong>
+- 工商银行以 <strong class="num">52.8万亿元</strong> 的总资产规模，领先于建设银行。
+- 建设银行的总资产规模为 <strong class="num">45.4万亿元</strong>。
+- 工商银行的总资产规模约为建设银行的 1.16倍。
+
+<strong>市场地位解读</strong>
+两家银行均属于中国"四大行"之列，是金融体系的绝对核心。工商银行长期被誉为"宇宙行"，其总资产规模在全球银行业中也名列前茅，本次对比结果符合其一贯的市场地位。建设银行同样规模巨大，两者差距主要体现在历史积累、客户基础和业务结构的细微差别上。
+
+<strong>业务影响</strong>
+- 规模效应：更大的资产规模通常意味着更强的风险抵御能力、更广泛的业务覆盖和更高的市场影响力。
+- 经营策略：资产规模的差异可能反映了双方在信贷投放、投资策略及市场拓展重心上的不同。
+
+<strong>总结</strong>：根据截至2025年第三季度的最新财务数据，中国工商银行的总资产规模显著大于中国建设银行，领先优势约为7.44万亿元，相对领先16.41%。这巩固了工行作为中国最大商业银行的地位。</div>
+      <div class="sys-note"><strong>系统动作说明：</strong>本案例为最快通过的Medium（210s）。两表报告期均为2025-09-30，同期对齐，任务链短（2个API调用+差值计算），无重试，无字段歧义。</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 转型信号识别 ══════════════ -->
+  <div class="section-label">转型信号识别 · 对应简历："平安转型信号识别"案例</div>
+
+  <!-- Case 平安营收净利润 -->
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-medium">Medium · 趋势分析</span>
+      <span class="case-query">分析中国平安的营收和净利润趋势</span>
+      <span class="case-meta">✓ 耗时 611s（最长）· Hit@1=100%</span>
+    </div>
+    <div class="case-body">
+      <div class="data-tag">[DATA]: income_statement接口 · total_revenue + n_income_attr_p字段</div>
+      <table class="md-table">
+        <thead><tr><th>指标</th><th>2022年</th><th>2023年</th><th>趋势解读</th></tr></thead>
+        <tbody>
+          <tr><td><strong>营业收入</strong></td><td><strong class="num">11,105.68亿元</strong></td><td><strong class="num">9,137.89亿元</strong></td><td>显著下滑，同比减少 <strong>17.72%</strong></td></tr>
+          <tr><td><strong>归母净利润</strong></td><td><strong class="num">837.74亿元</strong></td><td><strong class="num">856.65亿元</strong></td><td>企稳回升，同比增长 <strong>+2.26%</strong></td></tr>
+          <tr><td><strong>净利润率</strong></td><td>7.54%</td><td><strong class="num">9.37%</strong></td><td>大幅提升，盈利效率增强</td></tr>
+        </tbody>
+      </table>
+      <div class="answer-text">⚠️ 数据备注：2024年营收数据（1亿元）明显异常，本次分析基于可靠的2022-2023年度财报数据。
+
+<strong>中国平安财务趋势分析：韧性显现，转型深化</strong>
+
+核心特征：<strong>"营收承压收缩，但净利润已触底回升"</strong>，标志着其从规模扩张向"提质增效"的价值经营模式深度转型。
+
+<strong>深度解读与动因分析</strong>
+
+1. "降收稳利"背后的战略调整
+2023年的财务表现清晰表明，平安正主动调整业务结构。营收下滑可能与主动压缩部分价值率较低的规模性业务有关，而利润的逆势增长则得益于高价值业务占比提升、严格的成本管控以及投资端表现的改善。
+
+2. 核心业务板块影响
+寿险与健康险改革：深度转型期影响了新单保费增长（拉低营收），但改革成果正逐步体现在保单品质、续期业务稳定性和新业务价值率（NBV Margin）的提升上，这支撑了利润的稳定。
+资产管理与银行：平安银行、信托、证券等业务板块的稳健利润贡献，构成了集团重要的"利润稳定器"，平滑了保险主业的周期性波动。
+
+3. 关键财务比率印证
+净利润率从7.54%跃升至9.37%，这一改善幅度（+1.83个百分点）在营收大幅萎缩的背景下尤为难得，有力印证了公司"降本增效"战略的初步成效。</div>
+      <div class="sys-note"><strong>系统动作说明：</strong>耗时611s为本批次最长，原因：平安财务数据跨寿险/财险/银行多个业务板块，需多次API调用才能完整覆盖；系统还主动检测到2024年数据异常（1亿元），触发数据质量预警而非盲目输出。这正是"数据真空/异常数据降级处理"机制的体现。</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 失败案例 ══════════════ -->
+  <div class="section-label">失败案例 · 已知Bug · 非RAG/推理系统性问题</div>
+
+  <div class="case">
+    <div class="case-head">
+      <span class="tag tag-fail">Failed · 代码Bug</span>
+      <span class="case-query">查询银行板块中股息率最高的前5只股票</span>
+      <span class="case-meta">✗ 耗时 604s · kw_recall=100%</span>
+    </div>
+    <div class="fail-body">
+      <div class="fail-error">NameError: name 'stdout_capture' is not defined
+
+[REJECT]: 重试3次后放弃 [Retry Hint] immediate_retry
+
+[Error Preview] [ERROR]: NameError: name 'stdout_capture' is not defined...</div>
+      <div class="fail-note">
+        <strong>失败定位（已明确，非系统性缺陷）：</strong><br>
+        字段名召回正确（kw_recall=100%，dv_ttm字段）；任务规划正确（取银行板块股票列表→批量查daily_basic→按dv_ttm排序取前5）；失败发生在Coder生成的代码里引用了一个在当前执行脚本作用域内未定义的变量名 <code>stdout_capture</code>。这是一个局部变量引用错误（变量在上一次失败的代码片段里定义，Python内核重启后消失，新代码片段直接引用了旧变量名）。<br><br>
+        <strong>修复思路：</strong>在Coder的System Prompt中增加"每个代码片段必须自包含，不得引用未在本次脚本中显式定义的变量"的硬约束，或在代码执行前通过AST做变量引用完整性检查。<br><br>
+        <strong>此案例不影响RAG、推理轨迹控制、故障归因等核心能力的评估。</strong>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

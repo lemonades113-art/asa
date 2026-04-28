@@ -1,0 +1,131 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# Logs
+*.log
+logs/
+
+# Cache and temporary
+.cache/
+cache/
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Test outputs and results
+test_output*.txt
+test_out*.txt
+test_result*.txt
+final_test*.log
+test_*.log
+*_test_*.log
+*.jsonl
+
+# Trajectories and logs
+trajectories/
+full_run_*.log
+run.log
+diag_*.txt
+
+# Stress test results
+stress_test_*.log
+stress_test_*.json
+stress_test_*.txt
+
+# ASA test results
+asa_*.json
+asa_problems_*.json
+
+# Evaluation results
+evaluation_results/
+test_eval/
+
+# E2E test logs
+e2e_*.log
+e2e_*.txt
+
+# RAG logs
+rag_*.log
+rag_*.txt
+
+# Debug files
+_debug_*.py
+diagnose_*.py
+diagnose_*.txt
+
+# Output files
+output/
+final_result.txt
+verify_*.txt
+verify_*.log
+
+# Chroma DB and FAISS cache
+chroma_db/
+.faiss_cache/
+memory_store/
+test_mem/
+
+# Gradio
+.gradio/
+
+# Learnings
+.learnings/
+
+# Schema cache
+.schema_cache/
+
+# Large data files
+*.csv
+*.parquet
+*.feather
+
+# Documentation (keep only essential ones)
+*.pyc
+*.pyo
+
+# OS files
+Thumbs.db
+Desktop.ini
