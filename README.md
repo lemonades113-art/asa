@@ -1,83 +1,83 @@
-# ASA (AI Stock Analyst) - 多智能体金融数据分析系统
+# ASA (AI Stock Analyst) - Multi-Agent Financial Data Analysis System
 
-## 项目概述
+## Project Overview
 
-ASA是一个基于LangGraph的多智能体协作系统，用于解决金融量化分析中的"长链路推理"与"数据真空"问题。系统通过Supervisor模式协调多个Agent节点，实现从任务规划、代码生成、逻辑审计到故障自愈的完整闭环。
+ASA is a LangGraph-based multi-agent collaboration system designed to solve "long-chain reasoning" and "data vacuum" problems in financial quantitative analysis. The system coordinates multiple Agent nodes through a Supervisor pattern, implementing a complete closed loop from task planning, code generation, logical auditing to fault self-healing.
 
-**核心代码规模**：7800+行
-- `multi_agent.py`: 3268行 - Supervisor模式编排框架
-- `lib.py`: 1598行 - 模型工厂、执行内核、工具函数
-- `memory_system.py`: 1201行 - 分层记忆系统
-- `orchestrator.py`: 1656行 - Agent协调层
-- `rca_module.py`: 551行 - 根因分析模块
-- `trajectory_collector.py`: 433行 - 轨迹收集器
+**Core Code Scale**: 7800+ lines
+- `multi_agent.py`: 3268 lines - Supervisor orchestration framework
+- `lib.py`: 1598 lines - Model factory, execution kernel, utility functions
+- `memory_system.py`: 1201 lines - Hierarchical memory system
+- `orchestrator.py`: 1656 lines - Agent coordination layer
+- `rca_module.py`: 551 lines - Root cause analysis module
+- `trajectory_collector.py`: 433 lines - Trajectory collector
 
 ---
 
-## 系统架构
+## System Architecture
 
-### 核心Agent节点
+### Core Agent Nodes
 
 ```
 User Input
     ↓
-Supervisor (任务规划与路由)
+Supervisor (Task Planning & Routing)
     ↓
-Coder (代码生成与执行) ←→ Tools (工具调用)
+Coder (Code Generation & Execution) ←→ Tools (Tool Invocation)
     ↓
-Reviewer (逻辑审计)
+Reviewer (Logical Auditing)
     ↓
-ErrorHandler (错误修复) ←→ ProfileUpdater (画像更新)
+ErrorHandler (Error Recovery) ←→ ProfileUpdater (Profile Update)
     ↓
 FINISH
 ```
 
-### 关键设计模式
+### Key Design Patterns
 
-1. **Supervisor模式**：中央控制器负责任务分解和节点调度
-2. **物理任务队列**：通过`remaining_steps.pop(0)`强制任务执行顺序
-3. **模型分层**：qwen-plus(强逻辑) vs qwen-turbo(轻量级)
-4. **Skill-on-demand**：动态技能注入机制
-5. **Thread隔离**：KernelManager实现会话级Namespace隔离
+1. **Supervisor Pattern**: Central controller responsible for task decomposition and node scheduling
+2. **Physical Task Queue**: Enforces execution order via `remaining_steps.pop(0)`
+3. **Model Tiering**: qwen-plus (strong logic) vs qwen-turbo (lightweight)
+4. **Skill-on-demand**: Dynamic skill injection mechanism
+5. **Thread Isolation**: KernelManager achieves session-level namespace isolation
 
 ---
 
-## 核心机制详解
+## Core Mechanisms
 
-### 1. 确定性流程控制
+### 1. Deterministic Flow Control
 
-**物理任务队列** (`multi_agent.py` 第728、762、804行)：
+**Physical Task Queue** (`multi_agent.py` lines 728, 762, 804):
 
 ```python
-# 只有成功执行才物理弹出
+# Only pop on successful execution
 finished_step = remaining_steps.pop(0)
 ```
 
-**解决的问题**：
-- LLM在长链路任务中容易产生"虚假完成"幻觉
-- 通过`pop(0)`强制物理控制，只要列表不为空就必须继续执行
+**Problem Solved**:
+- LLMs are prone to "false completion" hallucinations in long-chain tasks
+- `pop(0)` enforces physical control: as long as the list is not empty, execution must continue
 
-### 2. 动态技能注入 (Skill-on-demand)
+### 2. Dynamic Skill Injection (Skill-on-demand)
 
-**技能库** (`skills.json`)：
+**Skill Library** (`skills.json`):
 
-| 技能名 | 触发关键词 | 核心功能 |
-|--------|-----------|---------|
-| dividend_expert | 分红、股息 | dv_ttm单位转换、状态过滤 |
-| charting_expert | 画图、可视化 | 中文字体、路径生成 |
-| finance_audit | 财报、收入 | 单位转换、时间滞后检查 |
-| market_expert | 港股、ETF | 代码后缀、估值切换 |
-| error_handling | 错误、重试 | 重试策略、优雅降级 |
+| Skill Name | Trigger Keywords | Core Function |
+|------------|-----------------|---------------|
+| dividend_expert | dividend, dividend yield | dv_ttm unit conversion, status filtering |
+| charting_expert | plot, visualize | Chinese font, path generation |
+| finance_audit | financial report, revenue | unit conversion, time lag check |
+| market_expert | HK stock, ETF | code suffix, valuation switch |
+| error_handling | error, retry | retry strategy, graceful degradation |
 
-**工作流程**：
-1. Supervisor识别意图 → 建议加载技能
-2. Coder调用`load_skill()`工具
-3. 系统读取skills.json，将规则注入为ToolMessage
-4. Coder在接收技能后生成代码
+**Workflow**:
+1. Supervisor identifies intent → suggests loading skill
+2. Coder calls `load_skill()` tool
+3. System reads skills.json, injects rules as ToolMessage
+4. Coder generates code after receiving skill
 
-### 3. 模型分层工厂
+### 3. Model Tiering Factory
 
-**实现** (`lib.py` 第67-108行)：
+**Implementation** (`lib.py` lines 67-108):
 
 ```python
 def get_chat_model(model_type):
@@ -87,11 +87,11 @@ def get_chat_model(model_type):
     }
 ```
 
-**效果**：轻量级节点用低成本模型，核心逻辑节点用高性能模型，有效控制推理成本。
+**Effect**: Lightweight nodes use low-cost models, core logic nodes use high-performance models, effectively controlling inference costs.
 
-### 4. 会话隔离 (KernelManager)
+### 4. Session Isolation (KernelManager)
 
-**实现** (`lib.py` 第481-552行)：
+**Implementation** (`lib.py` lines 481-552):
 
 ```python
 class KernelManager:
@@ -101,174 +101,179 @@ class KernelManager:
         return self._kernels[thread_id]
 ```
 
-**特性**：
-- 每个thread_id拥有独立的Python执行环境
-- 多租户间变量物理隔离
-- 同一用户多轮对话可接力使用变量
+**Features**:
+- Each thread_id has an independent Python execution environment
+- Physical variable isolation between multi-tenants
+- Multi-turn conversations from the same user can接力 use variables
 
-### 5. 4级回溯策略 (BacktrackingRouter)
+### 5. 4-Level Backtracking Strategy (BacktrackingRouter)
 
-**实现** (`multi_agent.py` 第105-160行)：
+**Implementation** (`multi_agent.py` lines 105-160):
 
-| 级别 | 策略 | 触发条件 |
-|-----|------|---------|
-| L1 | direct_query | 首次尝试 |
-| L2 | step_by_step | 数据为空 |
-| L3 | alternative_fields | 主字段失效 |
-| L4 | reject_with_reason | 所有策略穷尽 |
+| Level | Strategy | Trigger Condition |
+|-------|----------|-------------------|
+| L1 | direct_query | First attempt |
+| L2 | step_by_step | Empty data |
+| L3 | alternative_fields | Primary field failure |
+| L4 | reject_with_reason | All strategies exhausted |
 
-### 6. Self-Correction反思机制
+### 6. Self-Correction Reflection Mechanism
 
-**实现** (`multi_agent.py` 第646-681行)：
+**Implementation** (`multi_agent.py` lines 646-681):
 
 ```python
 if execution_status == "error" and retry_count >= 2:
-    # 触发反思循环
+    # Trigger reflection loop
     reflection_prompt = f"""
-    用户意图: {last_msg_content}
-    错误类型: {error_type}
-    重试次数: {retry_count}
+    User Intent: {last_msg_content}
+    Error Type: {error_type}
+    Retry Count: {retry_count}
     
-    请反思：
-    1. 意图理解是否有偏差？
-    2. 技能选择是否恰当？
-    3. API参数是否正确？
-    4. 有无其他备选方案？
+    Please reflect:
+    1. Was intent understanding biased?
+    2. Was skill selection appropriate?
+    3. Were API parameters correct?
+    4. Are there alternative approaches?
     """
 ```
 
 ---
 
-## 扩展模块
+## Extension Modules
 
-### 1. 分层记忆系统 (memory_system.py)
+### 1. Hierarchical Memory System (memory_system.py)
 
 ```
 ┌─────────────────┐  ┌─────────────────┐
-│   短期记忆       │  │   长期记忆       │
-│ (Working Memory)│  │ (Long-Term)     │
+│  Short-Term     │  │  Long-Term      │
+│  (Working)      │  │  (Long-Term)    │
 │                 │  │                 │
-│ - 最近5轮对话   │  │ - 成功策略       │
-│ - TTL: 30min   │  │ - 知识片段       │
+│ - Last 5 rounds │  │ - Success       │
+│ - TTL: 30min    │  │   strategies    │
+│                 │  │ - Knowledge     │
+│                 │  │   fragments     │
 └─────────────────┘  └─────────────────┘
          ↓                    ↓
 ┌─────────────────────────────────────┐
-│         记忆衰退机制                 │
-│ - 时间: 30天未访问 → 权重-50%       │
-│ - 重要性: success_count>3 → 永久保留│
-│ - 相关性: embedding<0.5 → 不召回    │
+│      Memory Decay Mechanism          │
+│ - Time: 30 days no access → -50%    │
+│   weight                              │
+│ - Importance: success_count>3 →     │
+│   permanent retention                 │
+│ - Relevance: embedding<0.5 → no     │
+│   recall                              │
 └─────────────────────────────────────┘
 ```
 
-### 2. Agent协调层 (orchestrator.py)
+### 2. Agent Coordination Layer (orchestrator.py)
 
-**功能**：
-- Agent间冲突仲裁（投票、优先级、共识）
-- 4级Fallback策略（重试→切换→人工→拒答）
-- Human-in-the-Loop（低置信度触发人工确认）
-- ToolUsageGraph（工具智能路由）
+**Features**:
+- Inter-agent conflict arbitration (voting, priority, consensus)
+- 4-level Fallback strategy (retry → switch → human → reject)
+- Human-in-the-Loop (triggers human confirmation at low confidence)
+- ToolUsageGraph (intelligent tool routing)
 
-### 3. 根因分析 (rca_module.py)
+### 3. Root Cause Analysis (rca_module.py)
 
-**功能**：
-- Fault Propagation Graph：追踪错误在Agent间的传播路径
-- Root Cause Localization：定位真正的错误源头
-- Propagation-Aware Retry：基于传播链选择重试策略
+**Features**:
+- Fault Propagation Graph: Traces error propagation path across Agents
+- Root Cause Localization: Identifies the true error source
+- Propagation-Aware Retry: Selects retry strategy based on propagation chain
 
-### 4. 轨迹收集 (trajectory_collector.py)
+### 4. Trajectory Collection (trajectory_collector.py)
 
-**功能**：
-- 自动收集Agent运行轨迹
-- 生成DPO格式的偏好数据
-- Error-Specific分类（12种错误类型）
-
----
-
-## 测试验证
-
-### 压测结果
-
-| 测试批次 | 样本数 | 成功率 | 关键观察 |
-|---------|-------|--------|---------|
-| batch_run_20260130_173002 | 45 | **80.0%** | finance_audit技能，28步完成 |
-| batch_run_20260130_155446 | 27 | **66.7%** | charting_expert技能，API授权问题 |
-| **合计** | **72** | **73%** | 技能加载100%成功 |
-
-### 真实案例演示
-
-**输入**：`"查询科大讯飞的政府补贴占净利润比重，分析其盈利质量。"`
-
-**执行流程**：
-1. Supervisor识别意图 → 建议加载finance_audit
-2. Coder调用load_skill("finance_audit") → ✅ 技能加载成功
-3. Coder生成Tushare查询代码
-4. Tools执行代码 → 返回原始数据
-5. Coder数据处理 → 单位转换、字段提取
-6. ... (共28步)
-7. Reviewer逻辑审计 → ⚠️ 检测到数据异常
-8. Reviewer生成报告 → 详细风险分析
-9. ProfileUpdater更新画像
-
-**输出**：成功完成，Reviewer正确识别"2025年净利润在2025年2月前不可能存在"等数据问题。
+**Features**:
+- Automatically collects Agent execution trajectories
+- Generates DPO-format preference data
+- Error-Specific classification (12 error types)
 
 ---
 
-## 项目状态
+## Testing & Validation
 
-**当前阶段**：功能原型已成型，生产级可靠性优化进行中
+### Stress Test Results
 
-**已验证**：
-- ✅ Supervisor模式编排
-- ✅ 物理任务队列控制
-- ✅ 动态技能注入
-- ✅ 模型分层调度
-- ✅ KernelManager会话隔离
-- ✅ 72轮压测验证（73%成功率）
+| Test Batch | Samples | Success Rate | Key Observations |
+|------------|---------|--------------|------------------|
+| batch_run_20260130_173002 | 45 | **80.0%** | finance_audit skill, completed in 28 steps |
+| batch_run_20260130_155446 | 27 | **66.7%** | charting_expert skill, API authorization issues |
+| **Total** | **72** | **73%** | Skill loading 100% successful |
 
-**进行中**：
-- 🔄 执行序列审计机制（防止递归死循环）
-- 🔄 OpenSandbox内核集成
-- 🔄 记忆系统深度集成
+### Real Case Demonstration
+
+**Input**: `"Query the proportion of iFlytek's government subsidies to net profit and analyze its earnings quality."`
+
+**Execution Flow**:
+1. Supervisor identifies intent → suggests loading finance_audit
+2. Coder calls load_skill("finance_audit") → ✅ Skill loaded successfully
+3. Coder generates Tushare query code
+4. Tools execute code → returns raw data
+5. Coder processes data → unit conversion, field extraction
+6. ... (28 steps total)
+7. Reviewer logical audit → ⚠️ Detects data anomalies
+8. Reviewer generates report → detailed risk analysis
+9. ProfileUpdater updates profile
+
+**Output**: Successfully completed. Reviewer correctly identified data issues such as "2025 net profit cannot exist before February 2025".
 
 ---
 
-## 技术栈
+## Project Status
 
-- **编排框架**：LangGraph
-- **LLM**：阿里云通义千问 (qwen-plus / qwen-turbo)
-- **数据源**：Tushare Pro API
-- **数据处理**：Pandas, NumPy
-- **向量存储**：ChromaDB (可选)
-- **执行隔离**：StatefulPythonKernel / OpenSandbox (预留)
+**Current Phase**: Functional prototype成型, production-grade reliability optimization in progress
+
+**Verified**:
+- ✅ Supervisor pattern orchestration
+- ✅ Physical task queue control
+- ✅ Dynamic skill injection
+- ✅ Model tiered scheduling
+- ✅ KernelManager session isolation
+- ✅ 72-round stress test validation (73% success rate)
+
+**In Progress**:
+- 🔄 Execution sequence audit mechanism (prevent recursive dead loops)
+- 🔄 OpenSandbox kernel integration
+- 🔄 Deep memory system integration
 
 ---
 
-## 文件结构
+## Tech Stack
+
+- **Orchestration Framework**: LangGraph
+- **LLM**: Alibaba Cloud Tongyi Qwen (qwen-plus / qwen-turbo)
+- **Data Source**: Tushare Pro API
+- **Data Processing**: Pandas, NumPy
+- **Vector Storage**: ChromaDB (optional)
+- **Execution Isolation**: StatefulPythonKernel / OpenSandbox (reserved)
+
+---
+
+## File Structure
 
 ```
 ASA/
-├── multi_agent.py          # 核心编排框架 (3268行)
-├── lib.py                  # 模型工厂、执行内核 (1598行)
-├── memory_system.py        # 分层记忆系统 (1201行)
-├── orchestrator.py         # Agent协调层 (1656行)
-├── rca_module.py           # 根因分析 (551行)
-├── trajectory_collector.py # 轨迹收集 (433行)
-├── skills.json             # 5类技能库
-├── conf.py                 # 配置管理
-├── batch_test_runner.py    # 压测框架
-└── evaluation_results/     # 测试结果
-    ├── batch_run_20260130_173002.jsonl  # 45轮测试
-    └── batch_run_20260130_155446.jsonl  # 27轮测试
+├── multi_agent.py          # Core orchestration framework (3268 lines)
+├── lib.py                  # Model factory, execution kernel (1598 lines)
+├── memory_system.py        # Hierarchical memory system (1201 lines)
+├── orchestrator.py         # Agent coordination layer (1656 lines)
+├── rca_module.py           # Root cause analysis (551 lines)
+├── trajectory_collector.py # Trajectory collection (433 lines)
+├── skills.json             # 5-type skill library
+├── conf.py                 # Configuration management
+├── batch_test_runner.py    # Stress test framework
+└── evaluation_results/     # Test results
+    ├── batch_run_20260130_173002.jsonl  # 45-round test
+    └── batch_run_20260130_155446.jsonl  # 27-round test
 ```
 
 ---
 
-## 核心代码引用
+## Core Code References
 
-| 机制 | 文件 | 行号 |
-|-----|------|-----|
+| Mechanism | File | Lines |
+|-----------|------|-------|
 | remaining_steps.pop(0) | multi_agent.py | 728, 762, 804 |
-| 模型分层工厂 | lib.py | 67-108 |
+| Model tiering factory | lib.py | 67-108 |
 | KernelManager | lib.py | 481-552 |
 | BacktrackingRouter | multi_agent.py | 105-160 |
 | Self-Correction | multi_agent.py | 646-681 |
@@ -276,6 +281,6 @@ ASA/
 
 ---
 
-**项目作者**：way  
-**创建时间**：2025-11-06  
-**最后更新**：2026-01-30
+**Project Author**: way  
+**Created**: 2025-11-06  
+**Last Updated**: 2026-01-30
